@@ -60,6 +60,7 @@ const logout = (req, res) => {
 
 const protect = asyncHandler(async (req, res, next) => {
   // 1) Getting token and check if it's there
+  
   let token
   if (
     req.headers.authorization &&
@@ -173,7 +174,6 @@ const restrictTo = (roles) => {
 }
 
 const forgotPassword = asyncHandler(async (req, res, next) => {
-
   // 1) Get user based on POSTed email
   const user = await User.findOne({ email: req.body.email })
   if (!user) {
@@ -199,11 +199,11 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
       subject: 'Bem vindo ao pesquisajus ! Confirme o seu email',
       text: '***********textnulo*************',
       // html: html
-      html : `<div> 
+      html: `<div> 
       <p>Seja bem vindo ao site pesquisajus1</p><br>
       <p>Por favor clique no link abaixo para confirmar o seu email<p><br>
       <p>${resetURL}</p></br><
-      <button type="button" href="${resetURL}">Confirmo o meu email ${user.email}</button><br></div>`
+      <button type="button" href="${resetURL}">Confirmo o meu email ${user.email}</button><br></div>`,
     }
 
     console.log(msg)

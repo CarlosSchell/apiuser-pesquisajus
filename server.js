@@ -16,8 +16,7 @@ import app from './app.js'
 //   process.env.DATABASE_PASSWORD
 // );
 
-const DB =
-  '=mongodb+srv://CarlosSchell:Chsmon1962@cluster0.jrlnc.mongodb.net/natours?authSource=admin&replicaSet=atlas-10nsk0-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true'
+const DB = 'mongodb+srv://CarlosSchell:Chsmon1962@cluster0.jrlnc.mongodb.net/natours?authSource=admin&replicaSet=atlas-10nsk0-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true'
 
 mongoose
   .connect(DB, {
@@ -53,13 +52,13 @@ const server = app.listen(port, () => {
   console.log(`App running on port ${port}...`)
 })
 
-process.on('unhandledRejection', (err) => {
-  console.log('UNHANDLED REJECTION! 💥 Shutting down...')
-  console.log(err.name, err.message)
-  server.close(() => {
-    process.exit(1)
-  })
-})
+// process.on('unhandledRejection', (err) => {
+//   console.log('UNHANDLED REJECTION! 💥 Shutting down...')
+//   console.log(err.name, err.message)
+//   server.close(() => {
+//     process.exit(1)
+//   })
+// })
 
 process.on('SIGTERM', () => {
   console.log('👋 SIGTERM RECEIVED. Shutting down gracefully')
