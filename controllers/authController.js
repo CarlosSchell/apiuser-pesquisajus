@@ -15,6 +15,7 @@ const login = asyncHandler(async (req, res, next) => {
 
   //console.log(email)
   //console.log(password)
+  // error.response && error.response.data.message
 
   // 1) Check if email and password exist
   if (!email || !password) {
@@ -60,7 +61,7 @@ const logout = (req, res) => {
 
 const protect = asyncHandler(async (req, res, next) => {
   // 1) Getting token and check if it's there
-  
+
   let token
   if (
     req.headers.authorization &&

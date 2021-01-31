@@ -26,7 +26,7 @@ router.patch('/resetPassword/:token', resetPassword)
 //   // .post(userController.createUser);
 
 // Protect all routes after this middleware
-router.use(protect)
+// router.use(protect)
 
 router.patch('/updateMyPassword', updateMyPassword)
 // router.get('/me', userController.getMe, userController.getUser);
