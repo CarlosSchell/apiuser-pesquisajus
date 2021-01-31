@@ -109,7 +109,7 @@ app.use('/api/v1/users', userRouter);
 //app.use('/api/v1/bookings', bookingRouter);
 
 app.all('*', (req, res, next) => {
-  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+  next(new AppError(`Erro no servidor - 404 - Url ${req.originalUrl} não encontrada`, 404));
 });
 
 app.use(globalErrorHandler);
