@@ -79,7 +79,16 @@ const protect = asyncHandler(async (req, res, next) => {
   }
 
   // 2) Read and Verify token
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_PUBLIC, {
+    algorithm: ['RS256'],
+  })
+
+  // Como o token é gerado
+  // const tokenGenerated = jwt.sign(
+  //   payload,
+  //   process.env.JWT_SECRET,
+  //   { algorithm: ['RS256'], expiresIn: (process.env.JWT_TOKEN_EXPIRES_IN_HOURS * 60 * 60)
+  // })
 
   // console.log(decoded)
 

@@ -8,8 +8,8 @@ const signToken = (user) => {
 
   const tokenGenerated = jwt.sign(
     payload, 
-    process.env.JWT_SECRET, {
-    expiresIn: (process.env.JWT_TOKEN_EXPIRES_IN_HOURS * 60 * 60)
+    process.env.JWT_SECRET, 
+    { algorithm: ['RS256'], expiresIn: (process.env.JWT_TOKEN_EXPIRES_IN_HOURS * 60 * 60)
   })
 
   return tokenGenerated
