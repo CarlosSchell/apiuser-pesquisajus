@@ -42,8 +42,10 @@ const register = asyncHandler(async (req, res, next) => {
   // const url = `${req.protocol}://${req.get('host')}/me`
   // // console.log(url);
   // await new Email(newUser, url).sendWelcome()
-
-  createSendToken(newUser, 201, req, res)
+  // Send User data without token
+  res.status(201).json({ status: 'success', user: newUser })
+  
+  // createSendToken(newUser, 201, req, res)
 })
 
 const logout = (req, res) => {
