@@ -80,7 +80,7 @@ const protect = asyncHandler(async (req, res, next) => {
 
   // 2) Read and Verify token
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_PUBLIC, {
-    algorithm: ['RS256'],
+    algorithm: ['RS256']
   })
 
   // Como o token é gerado

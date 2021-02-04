@@ -20,9 +20,9 @@ router.get('/logout', logout)
 router.post('/forgotPassword', forgotPassword)
 router.patch('/resetPassword/:token', resetPassword)
 
-// router
-//   .route('/')
-//   .get(getAllUsers)
+router
+  .route('/')
+  .get(getAllUsers)
 //   // .post(userController.createUser);
 
 // Protect all routes after this middleware
@@ -42,7 +42,7 @@ router.patch('/updateMyPassword', updateMyPassword)
 
 // router.use(restrictTo(['user','premium','master','admin']));
 
-router.route('/').get(getAllUsers)
+// router.route('/').get(getAllUsers)
 // .post(userController.createUser);
 
 router.route('/:id').get(getOneUser)

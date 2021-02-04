@@ -1,16 +1,16 @@
 import jwt from 'jsonwebtoken'
 
 const signToken = (user) => {
-  const payload = { 
-    email: user.email,
-    role: user.role
-  }
+  const payload = { email: user.email,role: user.role }
 
   const tokenGenerated = jwt.sign(
     payload, 
     process.env.JWT_SECRET, 
     { algorithm: ['RS256'], expiresIn: (process.env.JWT_TOKEN_EXPIRES_IN_HOURS * 60 * 60)
-  })
+  }, (err, user) => {
+    console.log(token)
+    return next(new AppError('Erro na geração do Token !', 403))
+})
 
   return tokenGenerated
 }
