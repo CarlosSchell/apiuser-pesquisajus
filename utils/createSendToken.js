@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import fs from 'fs'
 import AppError from './../utils/appError.js'
 
 const signToken = (user) => {
