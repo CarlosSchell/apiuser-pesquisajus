@@ -8,7 +8,7 @@ const signToken = (user) => {
     process.env.JWT_SECRET, 
     { algorithm: ['RS256'], expiresIn: (process.env.JWT_TOKEN_EXPIRES_IN_HOURS * 60 * 60)
   }, (err, user) => {
-    console.log(token)
+    //console.log(token)
     return next(new AppError('Erro na geração do Token !', 403))
 })
   return tokenGenerated
