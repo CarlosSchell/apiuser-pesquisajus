@@ -38,8 +38,8 @@ const criaEnviaToken = (user, statusCode, req, res) => {
     secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
   })
 
-  // Grava o localStorage (quandoe stamos no frontend)
-  // localStorage.setItem('userInfo', JSON.stringify(data))
+  // Grava o localStorage (quando estamos no frontend)
+  localStorage.setItem('userInfo', JSON.stringify(token))
 
   // Remove password from output
   user.password = undefined
