@@ -12,24 +12,19 @@ import { CLIENT_RENEG_LIMIT } from 'tls'
 
 const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body
-
   //console.log(email)
   //console.log(password)
   // error.response && error.response.data.message
-
   // 1) Check if email and password exist
   if (!email || !password) {
     return next(new AppError('Please provide email and password!', 400))
   }
   // 2) Check if user exists && password is correct
   const user = await User.findOne({ email: email }) //.select('+password')
-
   // console.log(user)
-
   if (!user || !(await user.matchPassword(password, user.password))) {
     return next(new AppError('O email ou a senha estão incorretos !', 401))
   }
-
   // 3) If everything ok, send token to client
   createSendToken(user, 200, req, res)
 })
