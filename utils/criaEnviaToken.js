@@ -15,10 +15,13 @@ const signToken = (user) => {
 
   // var token = jwt.sign({ foo: 'bar' }, privateKey, { algorithm: 'RS256' });
 
-  tokenGenerated = jwt.sign(tokenData, tokenKey, tokenOptions, (err) => {
-    return new AppError('Erro na geração do Token !', 403)
-  })
+  tokenGenerated = jwt.sign(tokenData, tokenKey, tokenOptions)
+    
+  //   , (err) => {
+  //   return new AppError('Erro na geração do Token !', 403)
+  // })
   console.log('Token Gerado : ', tokenGenerated)
+  
   return tokenGenerated
 }
 
