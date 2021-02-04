@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken'
-import fs from 'fs'
 import AppError from './../utils/appError.js'
 
 const signToken = (user) => {
@@ -39,7 +38,7 @@ const criaEnviaToken = (user, statusCode, req, res) => {
   })
 
   // Grava o localStorage (quando estamos no frontend)
-  localStorage.setItem('userInfo', JSON.stringify(token))
+  // localStorage.setItem('userInfo', JSON.stringify(token))
 
   // Remove password from output
   user.password = undefined
