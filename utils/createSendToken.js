@@ -2,23 +2,23 @@ import jwt from 'jsonwebtoken'
 import fs from 'fs'
 import AppError from './../utils/appError.js'
 
-const signToken = (user) => {
-  const payload = { email: user.email, role: user.role }
-  // console.log(process.env.JWT_SECRET)
-  const tokenGenerated = jwt.sign(
-    payload,
-    process.env.JWT_SECRET,
-    {
-      algorithm: ['RS256'],
-      expiresIn: process.env.JWT_TOKEN_EXPIRES_IN_HOURS * 60 * 60,
-    },
-    (err, user) => {
-      //console.log(token)
-      return new AppError('Erro na geração do Token !', 403)
-    }
-  )
-  return tokenGenerated
-}
+// const signToken = (user) => {
+//   const payload = { email: user.email, role: user.role }
+//   // console.log(process.env.JWT_SECRET)
+//   const tokenGenerated = jwt.sign(
+//     payload,
+//     process.env.JWT_SECRET,
+//     {
+//       algorithm: ['RS256'],
+//       expiresIn: process.env.JWT_TOKEN_EXPIRES_IN_HOURS * 60 * 60,
+//     },
+//     (err, user) => {
+//       //console.log(token)
+//       return new AppError('Erro na geração do Token !', 403)
+//     }
+//   )
+//   return tokenGenerated
+//}
 
 // const createSendToken = (user, statusCode, req, res) => {
 //   // Gera o Token
