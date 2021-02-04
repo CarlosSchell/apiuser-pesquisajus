@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import AppError from './../utils/appError.js'
 
 const signToken = (user) => {
   const payload = { email: user.email,role: user.role }
