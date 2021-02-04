@@ -27,8 +27,8 @@ const signToken = (user) => {
   return tokenGenerated
 }
 
-const criaEnviaToken = async (user, statusCode, req, res) => {
-  token = await signToken(user)
+const criaEnviaToken = (user, statusCode, req, res) => {
+  token = signToken(user)
   // Grava o cookie com o jwt token
   res.cookie('jwt', token, {
     expires: new Date(
