@@ -10,7 +10,7 @@ const signToken = async (user) => {
   }
   //const tokenKey = fs.readFileSync('private.key')
   const tokenKey = process.env.PRIVATE_KEY  
-  console.log('Chave Privada : ', PRIVATE_KEY)
+  console.log('Chave Privada : ', tokenKey)
   let tokenGenerated = ''
   tokenGenerated = jwt.sign(
     tokenData,
