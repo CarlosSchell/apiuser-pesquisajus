@@ -13,7 +13,7 @@ const signToken = (user) => {
   console.log('Chave Privada : ', tokenKey)
   let tokenGenerated = ''
 
-  var token = jwt.sign({ foo: 'bar' }, privateKey, { algorithm: 'RS256' });
+  // var token = jwt.sign({ foo: 'bar' }, privateKey, { algorithm: 'RS256' });
 
   tokenGenerated = jwt.sign(
     tokenData,
