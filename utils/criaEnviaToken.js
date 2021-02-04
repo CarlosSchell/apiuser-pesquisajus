@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 import fs from 'fs'
 import AppError from './../utils/appError.js'
 
-const signToken = async (user) => {
+const signToken = (user) => {
   const tokenData = { email: user.email, role: user.role }
   const tokenOptions = { 
     algorithm: 'RS512', 
@@ -12,6 +12,9 @@ const signToken = async (user) => {
   const tokenKey = process.env.JWT_PRIVATE 
   console.log('Chave Privada : ', tokenKey)
   let tokenGenerated = ''
+
+  var token = jwt.sign({ foo: 'bar' }, privateKey, { algorithm: 'RS256' });
+
   tokenGenerated = jwt.sign(
     tokenData,
     tokenKey,
@@ -36,6 +39,10 @@ const criaEnviaToken = async (user, statusCode, req, res) => {
       secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
     }
   )
+
+  // Grava o localStorage (quandoe stamos no frontend)
+  // localStorage.setItem('userInfo', JSON.stringify(data))
+
   // Remove password from output
   user.password = undefined
   res.status(statusCode).json({

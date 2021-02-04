@@ -32,6 +32,14 @@ const login = asyncHandler(async (req, res, next) => {
 
 const register = asyncHandler(async (req, res, next) => {
   console.log(req.body)
+  const { name, email, password } = req.body
+
+  const userExists = await User.findOne({ email })
+  if (userExists) {
+    res.status(400)
+    throw new Error('User already exists')
+  }
+
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
@@ -41,9 +49,9 @@ const register = asyncHandler(async (req, res, next) => {
   })
 
   // Envia email de confirmação
-  //console.log(newUser)
-  const url = `${req.protocol}://${req.get('host')}/me`
-  console.log(url);
+  // console.log(newUser)
+  // const url = `${req.protocol}://${req.get('host')}/me`
+  // console.log(url);
   // await new Email(newUser, url).sendWelcome()
   //
   // Send User data without token
