@@ -9,7 +9,7 @@ const signToken = async (user) => {
     expiresIn: process.env.JWT_TOKEN_EXPIRES_IN_HOURS * 60 * 60 
   }
   //const tokenKey = fs.readFileSync('private.key')
-  const tokenKey = process.env.PRIVATE_KEY  
+  const tokenKey = process.env.JWT_PRIVATE 
   console.log('Chave Privada : ', tokenKey)
   let tokenGenerated = ''
   tokenGenerated = jwt.sign(
