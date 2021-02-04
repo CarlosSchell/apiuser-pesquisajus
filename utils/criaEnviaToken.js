@@ -11,22 +11,24 @@ const signToken = (user) => {
   //const tokenKey = fs.readFileSync('private.key')
   const tokenKey = process.env.JWT_PRIVATE
   console.log('Chave Privada : ', tokenKey)
-  let tokenGenerated = ''
 
   // var token = jwt.sign({ foo: 'bar' }, privateKey, { algorithm: 'RS256' });
 
-  tokenGenerated = jwt.sign(tokenData, tokenKey, tokenOptions)
+  // jwt.verify(token, pubKey);
+
+  let tokenGenerated = jwt.sign(tokenData, tokenKey, tokenOptions)
     
   //   , (err) => {
   //   return new AppError('Erro na geração do Token !', 403)
   // })
   console.log('Token Gerado : ', tokenGenerated)
-  
+
   return tokenGenerated
 }
 
 const criaEnviaToken = (user, statusCode, req, res) => {
   const token = signToken(user)
+  console.log('Token Após ser Gerado : ', token)
   // Grava o cookie com o jwt token
   res.cookie('jwt', token, {
     expires: new Date(
