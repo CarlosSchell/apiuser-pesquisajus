@@ -4,41 +4,34 @@ import AppError from './../utils/appError.js'
 
 const signToken = (user) => {
   const tokenData = { email: user.email, role: user.role }
-  const tokenOptions = { 
-    algorithm: 'RS512', 
-    expiresIn: process.env.JWT_TOKEN_EXPIRES_IN_HOURS * 60 * 60 
+  const tokenOptions = {
+    algorithm: 'RS512',
+    expiresIn: process.env.JWT_TOKEN_EXPIRES_IN_HOURS * 60 * 60,
   }
   //const tokenKey = fs.readFileSync('private.key')
-  const tokenKey = process.env.JWT_PRIVATE 
+  const tokenKey = process.env.JWT_PRIVATE
   console.log('Chave Privada : ', tokenKey)
   let tokenGenerated = ''
 
   // var token = jwt.sign({ foo: 'bar' }, privateKey, { algorithm: 'RS256' });
 
-  tokenGenerated = jwt.sign(
-    tokenData,
-    tokenKey,
-    tokenOptions,
-    (err) => {
-      return new AppError('Erro na geração do Token !', 403)
-    }
-  )
+  tokenGenerated = jwt.sign(tokenData, tokenKey, tokenOptions, (err) => {
+    return new AppError('Erro na geração do Token !', 403)
+  })
   console.log('Token Gerado : ', tokenGenerated)
   return tokenGenerated
 }
 
 const criaEnviaToken = (user, statusCode, req, res) => {
-  token = signToken(user)
+  const token = signToken(user)
   // Grava o cookie com o jwt token
   res.cookie('jwt', token, {
     expires: new Date(
-    Date.now() + 
-    process.env.JWT_COOKIE_EXPIRES_IN_HOURS * 60 * 60 * 1000
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN_HOURS * 60 * 60 * 1000
     ),
-      httpOnly: true,
-      secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
-    }
-  )
+    httpOnly: true,
+    secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
+  })
 
   // Grava o localStorage (quandoe stamos no frontend)
   // localStorage.setItem('userInfo', JSON.stringify(data))
@@ -50,10 +43,7 @@ const criaEnviaToken = (user, statusCode, req, res) => {
     token,
     user,
   })
-        // return token
+  // return token
 }
-
-  
-
 
 export default criaEnviaToken
