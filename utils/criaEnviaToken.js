@@ -17,7 +17,7 @@ const signToken = (user) => {
   // jwt.verify(token, pubKey);
 
   let tokenGenerated = jwt.sign(tokenData, tokenKey, tokenOptions)
-    
+
   //   , (err) => {
   //   return new AppError('Erro na geração do Token !', 403)
   // })
