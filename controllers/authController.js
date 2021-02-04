@@ -27,7 +27,7 @@ const login = asyncHandler(async (req, res, next) => {
     return next(new AppError('O email ou a senha estão incorretos !', 401))
   }
   // 3) If everything ok, send token to client
-  createSendToken(user, 200, req, res)
+  criaEnviaToken(user, 200, req, res)
 })
 
 const register = asyncHandler(async (req, res, next) => {
