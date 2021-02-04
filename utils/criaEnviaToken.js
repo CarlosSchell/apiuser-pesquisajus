@@ -9,10 +9,10 @@ const signToken = (user) => {
     expiresIn: process.env.JWT_TOKEN_EXPIRES_IN_HOURS * 60 * 60,
   }
   //const tokenKey = fs.readFileSync('private.key')
+  // Algoritmo RSA 512
+  // Chaves com 1024 bits de tamanho
   const tokenKey = process.env.JWT_PRIVATE
   console.log('Chave Privada : ', tokenKey)
-
-  // var token = jwt.sign({ foo: 'bar' }, privateKey, { algorithm: 'RS256' });
 
   // jwt.verify(token, pubKey);
 
