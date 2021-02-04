@@ -5,7 +5,8 @@ import jwt from 'jsonwebtoken'
 
 import User from './../models/userModel.js'
 import AppError from './../utils/appError.js'
-import createSendToken from './../utils/createSendToken.js'
+import createSendToken from './../utils/createSendToken.js
+import criaEnviaToken from './../utils/criaEnviaToken.js''
 //import Email from './../utils/email.js'
 import sendMail from './../utils/sendMail.js'
 import { CLIENT_RENEG_LIMIT } from 'tls'
