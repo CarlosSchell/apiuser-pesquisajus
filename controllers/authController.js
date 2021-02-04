@@ -38,13 +38,18 @@ const register = asyncHandler(async (req, res, next) => {
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
   })
+
+  // Envia email de confirmação
   //console.log(newUser)
-  // const url = `${req.protocol}://${req.get('host')}/me`
-  // // console.log(url);
+  const url = `${req.protocol}://${req.get('host')}/me`
+  console.log(url);
   // await new Email(newUser, url).sendWelcome()
+  //
   // Send User data without token
-  res.status(201).json({ status: 'success', user: newUser })
-  
+  // res.status(201).json({ status: 'success', user: newUser })
+
+  criaEnviaToken(newUser, 201, req, res)
+
   // createSendToken(newUser, 201, req, res)
 })
 
