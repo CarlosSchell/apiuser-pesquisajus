@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken'
 import User from './../models/userModel.js'
 import AppError from './../utils/appError.js'
 //import createSendToken from './../utils/createSendToken.js
-import signToken from './../utils/criaEnviaToken.js'
+import { signToken } from './../utils/signToken.js'
 //import Email from './../utils/email.js'
 import sendMail from './../utils/sendMail.js'
 import { CLIENT_RENEG_LIMIT } from 'tls'
@@ -29,7 +29,7 @@ const login = asyncHandler(async (req, res, next) => {
     return next(new AppError('Erro do servidor na geração do token !', 500))
   }
 
-  const user = await User.findOneAndUpdate(
+  const userLogged = await User.findOneAndUpdate(
     { email }, 
     { token }, 
     { new: true}
