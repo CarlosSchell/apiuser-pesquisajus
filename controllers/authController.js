@@ -6,33 +6,45 @@ import jwt from 'jsonwebtoken'
 import User from './../models/userModel.js'
 import AppError from './../utils/appError.js'
 //import createSendToken from './../utils/createSendToken.js
-import criaEnviaToken from './../utils/criaEnviaToken.js'
+import signToken from './../utils/criaEnviaToken.js'
 //import Email from './../utils/email.js'
 import sendMail from './../utils/sendMail.js'
 import { CLIENT_RENEG_LIMIT } from 'tls'
 
 const login = asyncHandler(async (req, res, next) => {
-  const { email, password } = req.body
-  //console.log(email)
-  //console.log(password)
-  // error.response && error.response.data.message
-  // 1) Check if email and password exist
+  const { email, password, role } = req.body
   if (!email || !password) {
     return next(new AppError('Please provide email and password!', 400))
   }
-  // 2) Check if user exists && password is correct
-  const user = await User.findOne({ email: email }) //.select('+password')
-  // console.log(user)
+
+  const user = await User.findOne({ email }, )
+ 
   if (!user || !(await user.matchPassword(password, user.password))) {
     return next(new AppError('O email ou a senha estão incorretos !', 401))
   }
-  // 3) If everything ok, send token to client
-  criaEnviaToken(user, 200, req, res)
+
+  try {
+    let token = signToken({email, role})
+  } catch (err) {
+    return next(new AppError('Erro do servidor na geração do token !', 500))
+  }
+
+  const user = await User.findOneAndUpdate(
+    { email }, 
+    { token }, 
+    { new: true}
+  )
+
+  user.password = undefined
+  res.status(201).json({
+    status: 'success',
+    token,
+    user,
+  })
 })
 
 const register = asyncHandler(async (req, res, next) => {
-  console.log(req.body)
-  const { name, email, password } = req.body
+  const { email, role } = req.body
 
   const userExists = await User.findOne({ email })
   if (userExists) {
@@ -41,12 +53,14 @@ const register = asyncHandler(async (req, res, next) => {
     )
   }
 
+  let token = signToken({email, role})
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
     role: 'user',
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
+    token: token,
   })
 
   // Envia email de confirmação
@@ -56,9 +70,12 @@ const register = asyncHandler(async (req, res, next) => {
   // await new Email(newUser, url).sendWelcome()
   //
 
-  criaEnviaToken(newUser, 201, req, res)
-
-  // createSendToken(newUser, 201, req, res)
+  user.password = undefined
+  res.status(201).json({
+    status: 'success',
+    token,
+    newUser,
+  })
 })
 
 const logout = (req, res) => {
