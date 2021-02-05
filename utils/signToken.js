@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 
-export const signToken = (user) => {
-  const tokenData = { email: user.email, role: user.role }
+export const signToken = ({ email, role }) => {
+  const tokenData = { email, role }
   const tokenOptions = {
     algorithm: 'RS512',
     expiresIn: process.env.JWT_TOKEN_EXPIRES_IN_HOURS * 60 * 60,
