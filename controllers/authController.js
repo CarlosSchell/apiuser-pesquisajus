@@ -58,9 +58,9 @@ const register = asyncHandler(async (req, res, next) => {
     )
   }
 
-  // let token = 'abcdefg'
+  let token = ''
   try {
-    let token = signToken({ email, role })
+    token = signToken({ email, role })
     console.log('Token do Try : ', token)
   } catch (err) {
     return next(new AppError('Erro do servidor na geração do token !', 500))
