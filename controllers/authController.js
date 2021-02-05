@@ -12,7 +12,6 @@ import sendMail from './../utils/sendMail.js'
 import { CLIENT_RENEG_LIMIT } from 'tls'
 
 const login = asyncHandler(async (req, res, next) => {
-  
   const { email, password, role } = req.body
   // const role = 'user'
 
@@ -40,7 +39,7 @@ const login = asyncHandler(async (req, res, next) => {
     { new: true}
   )
 
-  if (!userLogged || !(await user.matchPassword(password, userLogged.password))) {
+  if (!userLogged || !(await User.matchPassword(password, userLogged.password))) {
     return next(new AppError('Erro ao gravar o login do Usuário', 500))
   }
 
