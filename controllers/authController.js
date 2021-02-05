@@ -12,15 +12,17 @@ import sendMail from './../utils/sendMail.js'
 import { CLIENT_RENEG_LIMIT } from 'tls'
 
 const login = asyncHandler(async (req, res, next) => {
-  // let role = 'user'
+  
   const { email, password, role } = req.body
+  // const role = 'user'
+
   if (!email || !password) {
     return next(new AppError('Please provide email and password!', 400))
   }
 
   const userExists = await User.findOne({ email }, )
  
-  if (!userExists || !(await user.matchPassword(password, user.password))) {
+  if (!userExists || !(await user.matchPassword(password, userExists.password))) {
     return next(new AppError('O email ou a senha estão incorretos !', 401))
   }
 
