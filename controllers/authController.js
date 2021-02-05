@@ -21,7 +21,7 @@ const login = asyncHandler(async (req, res, next) => {
 
   const userExists = await User.findOne({ email }, )
  
-  if (!userExists || !(await user.matchPassword(password, userExists.password))) {
+  if (!userExists || !(await User.matchPassword(password, userExists.password))) {
     return next(new AppError('O email ou a senha estão incorretos !', 401))
   }
 
@@ -39,7 +39,7 @@ const login = asyncHandler(async (req, res, next) => {
     { new: true}
   )
 
-  if (!userLogged || !(await User.matchPassword(password, userLogged.password))) {
+  if (!userLogged) {
     return next(new AppError('Erro ao gravar o login do Usuário', 500))
   }
 
