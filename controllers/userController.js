@@ -12,9 +12,7 @@ import { uploadUserPhoto, resizeUserPhoto } from './../utils/uploadUserPhoto.js'
 // @access  Public
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body
-
   const user = await User.findOne({ email })
-
   if (user && (await user.matchPassword(password))) {
     res.json({
       _id: user._id,
