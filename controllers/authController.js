@@ -12,6 +12,7 @@ import sendMail from './../utils/sendMail.js'
 import { CLIENT_RENEG_LIMIT } from 'tls'
 
 const login = asyncHandler(async (req, res, next) => {
+  // let role = 'user'
   const { email, password, role } = req.body
   if (!email || !password) {
     return next(new AppError('Please provide email and password!', 400))
@@ -25,7 +26,7 @@ const login = asyncHandler(async (req, res, next) => {
 
   let token
   try {
-    let token = signToken({email, role})
+    let token = signToken({ email, role })
   } catch (err) {
     return next(new AppError('Erro do servidor na geração do token !', 500))
   }
@@ -44,7 +45,7 @@ const login = asyncHandler(async (req, res, next) => {
   res.status(201).json({
     status: 'success',
     token,
-    user,
+    userLogged,
   })
 })
 
