@@ -17,23 +17,28 @@ const login = asyncHandler(async (req, res, next) => {
     return next(new AppError('Please provide email and password!', 400))
   }
 
-  const user = await User.findOne({ email }, )
+  const userExists = await User.findOne({ email }, )
  
-  if (!user || !(await user.matchPassword(password, user.password))) {
+  if (!userExists || !(await user.matchPassword(password, user.password))) {
     return next(new AppError('O email ou a senha estão incorretos !', 401))
   }
 
-  try {
-    let token = signToken({email, role})
-  } catch (err) {
-    return next(new AppError('Erro do servidor na geração do token !', 500))
-  }
+  let token = 'abcdefg'
+  // try {
+  //   let token = signToken({email, role})
+  // } catch (err) {
+  //   return next(new AppError('Erro do servidor na geração do token !', 500))
+  // }
 
   const userLogged = await User.findOneAndUpdate(
     { email }, 
     { token }, 
     { new: true}
   )
+
+  if (!userLogged || !(await user.matchPassword(password, user.password))) {
+    return next(new AppError('Erro ao gravar o login do Usuário', 500))
+  }
 
   user.password = undefined
   res.status(201).json({
@@ -53,7 +58,13 @@ const register = asyncHandler(async (req, res, next) => {
     )
   }
 
-  let token = signToken({email, role})
+  let token = 'abcdefg'
+  // try {
+  //   let token = signToken({email, role})
+  // } catch (err) {
+  //   return next(new AppError('Erro do servidor na geração do token !', 500))
+  // }
+
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
