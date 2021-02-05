@@ -23,12 +23,12 @@ const login = asyncHandler(async (req, res, next) => {
     return next(new AppError('O email ou a senha estão incorretos !', 401))
   }
 
-  let token = 'abcdefg'
-  // try {
-  //   let token = signToken({email, role})
-  // } catch (err) {
-  //   return next(new AppError('Erro do servidor na geração do token !', 500))
-  // }
+  let token
+  try {
+    let token = signToken({email, role})
+  } catch (err) {
+    return next(new AppError('Erro do servidor na geração do token !', 500))
+  }
 
   const userLogged = await User.findOneAndUpdate(
     { email }, 
