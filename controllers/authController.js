@@ -36,11 +36,11 @@ const login = asyncHandler(async (req, res, next) => {
     { new: true}
   )
 
-  if (!userLogged || !(await user.matchPassword(password, user.password))) {
+  if (!userLogged || !(await user.matchPassword(password, userLogged.password))) {
     return next(new AppError('Erro ao gravar o login do Usuário', 500))
   }
 
-  user.password = undefined
+  userLogged.password = undefined
   res.status(201).json({
     status: 'success',
     token,
