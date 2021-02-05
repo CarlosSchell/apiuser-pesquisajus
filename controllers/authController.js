@@ -81,7 +81,7 @@ const register = asyncHandler(async (req, res, next) => {
   // await new Email(newUser, url).sendWelcome()
   //
 
-  user.password = undefined
+  newUser.password = undefined
   res.status(201).json({
     status: 'success',
     token,
