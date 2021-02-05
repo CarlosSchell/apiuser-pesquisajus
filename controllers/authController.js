@@ -58,12 +58,12 @@ const register = asyncHandler(async (req, res, next) => {
     )
   }
 
-  let token = 'abcdefg'
-  // try {
-  //   let token = signToken({email, role})
-  // } catch (err) {
-  //   return next(new AppError('Erro do servidor na geração do token !', 500))
-  // }
+  // let token = 'abcdefg'
+  try {
+    let token = signToken({email, role})
+  } catch (err) {
+    return next(new AppError('Erro do servidor na geração do token !', 500))
+  }
 
   const newUser = await User.create({
     name: req.body.name,
