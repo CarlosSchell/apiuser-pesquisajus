@@ -19,25 +19,23 @@ const login = asyncHandler(async (req, res, next) => {
     return next(new AppError('Please provide email and password!', 400))
   }
 
-  const userExists = await User.findOne({ email }, )
- 
-  if (!userExists || !(await userExists.matchPassword(password, userExists.password))) {
+  const userExists = await User.findOne({ email })
+
+  if (
+    !userExists ||
+    !(await userExists.matchPassword(password, userExists.password))
+  ) {
     return next(new AppError('O email ou a senha estão incorretos !', 401))
   }
-
+  let a = 'eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNpbWJhQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNjEyNTY0NDA4LCJleHAiOjE2MTI2NTA4MDh9.NnmCPbWusB8NoLbhpqBrHsnckdTUQajcybioygqojxY1uvpS8SipSr44CMq5yr_yqLIHykjKsPk1sGtezpnp0sU7MA8qNOhBxrPlK30jTJxseD66rKRMhFB1D1IRuxYFJpaqE2XYWwqQkx_TlG1GkWPpRvY35qzrY9onclJKxwa2Df6ZCcnT7ZSSBL4xzZdvmjvk3dU1qRGwBke0SaaE0RsNV5Jy6OI5hJoMXti1RBxH35pec44Np9TaBZh06q4p_B7JV0i366dc40gHIEny0wTD8zx02HDeY5iXfRYTkQwxMEWXLiB8AdHTwg3C2gh6BhA7a8HImq92uzNc7kXBZg'
   let token
   try {
     let token = signToken({ email, role })
-    console.log('Token do Try : ', token)
   } catch (err) {
     return next(new AppError('Erro do servidor na geração do token !', 500))
   }
 
-  const user = await User.findOneAndUpdate(
-    { email }, 
-    { token }, 
-    { new: true}
-  )
+  const user = await User.findOneAndUpdate({ email }, { token }, { new: true })
 
   if (!user) {
     return next(new AppError('Erro ao gravar o login do usuário', 500))
@@ -51,21 +49,17 @@ const login = asyncHandler(async (req, res, next) => {
   })
 })
 
-
 const register = asyncHandler(async (req, res, next) => {
   const { email, role } = req.body
 
   const userExists = await User.findOne({ email })
   if (userExists) {
-    return next(
-      new AppError('User already exists', 400)
-    )
+    return next(new AppError('User already exists', 400))
   }
 
   let token = ''
   try {
     token = signToken({ email, role })
-    console.log('Token do Try : ', token)
   } catch (err) {
     return next(new AppError('Erro do servidor na geração do token !', 500))
   }
@@ -127,7 +121,7 @@ const protect = asyncHandler(async (req, res, next) => {
 
   // 2) Read and Verify token
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_PUBLIC, {
-    algorithm: ['RS256']
+    algorithm: ['RS256'],
   })
 
   // Como o token é gerado

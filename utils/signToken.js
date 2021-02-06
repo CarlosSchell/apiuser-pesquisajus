@@ -11,5 +11,6 @@ export const signToken = ({ email, role }) => {
   const tokenKey = process.env.JWT_PRIVATE
   let tokenGenerated = jwt.sign(tokenData, tokenKey, tokenOptions)
   //   , (err) => {eturn new AppError('Erro na geração do Token !', 403)})
+  console.log(tokenGenerated)
   return tokenGenerated
 }
