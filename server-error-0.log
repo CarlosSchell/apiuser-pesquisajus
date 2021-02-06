@@ -1,0 +1,224 @@
+/home/api-pesquisajus/apps_nodejs/home/server.js:1
+(function (exports, require, module, __filename, __dirname) { import mongoose from 'mongoose'
+                                                              ^^^^^^
+SyntaxError: Unexpected token import
+    at createScript (vm.js:56:10)
+    at Object.runInThisContext (vm.js:97:10)
+    at Module._compile (module.js:542:28)
+    at Object.Module._extensions..js (module.js:579:10)
+    at Module.load (module.js:487:32)
+    at tryModuleLoad (module.js:446:12)
+    at Function.Module._load (module.js:438:3)
+    at Object.<anonymous> (/opt/nodejs/6.11.1/lib/node_modules/pm2/lib/ProcessContainerFork.js:53:21)
+    at Module._compile (module.js:570:32)
+    at Object.Module._extensions..js (module.js:579:10)
+/home/api-pesquisajus/apps_nodejs/home/server.js:1
+(function (exports, require, module, __filename, __dirname) { import mongoose from 'mongoose'
+                                                              ^^^^^^
+SyntaxError: Unexpected token import
+    at createScript (vm.js:56:10)
+    at Object.runInThisContext (vm.js:97:10)
+    at Module._compile (module.js:542:28)
+    at Object.Module._extensions..js (module.js:579:10)
+    at Module.load (module.js:487:32)
+    at tryModuleLoad (module.js:446:12)
+    at Function.Module._load (module.js:438:3)
+    at Object.<anonymous> (/opt/nodejs/6.11.1/lib/node_modules/pm2/lib/ProcessContainerFork.js:53:21)
+    at Module._compile (module.js:570:32)
+    at Object.Module._extensions..js (module.js:579:10)
+/home/api-pesquisajus/apps_nodejs/home/server.js:1
+(function (exports, require, module, __filename, __dirname) { import mongoose from 'mongoose'
+                                                              ^^^^^^
+SyntaxError: Unexpected token import
+    at createScript (vm.js:56:10)
+    at Object.runInThisContext (vm.js:97:10)
+    at Module._compile (module.js:542:28)
+    at Object.Module._extensions..js (module.js:579:10)
+    at Module.load (module.js:487:32)
+    at tryModuleLoad (module.js:446:12)
+    at Function.Module._load (module.js:438:3)
+    at Object.<anonymous> (/opt/nodejs/6.11.1/lib/node_modules/pm2/lib/ProcessContainerFork.js:53:21)
+    at Module._compile (module.js:570:32)
+    at Object.Module._extensions..js (module.js:579:10)
+/home/api-pesquisajus/apps_nodejs/home/server.js:1
+(function (exports, require, module, __filename, __dirname) { import mongoose from 'mongoose'
+                                                              ^^^^^^
+SyntaxError: Unexpected token import
+    at createScript (vm.js:56:10)
+    at Object.runInThisContext (vm.js:97:10)
+    at Module._compile (module.js:542:28)
+    at Object.Module._extensions..js (module.js:579:10)
+    at Module.load (module.js:487:32)
+    at tryModuleLoad (module.js:446:12)
+    at Function.Module._load (module.js:438:3)
+    at Object.<anonymous> (/opt/nodejs/6.11.1/lib/node_modules/pm2/lib/ProcessContainerFork.js:53:21)
+    at Module._compile (module.js:570:32)
+    at Object.Module._extensions..js (module.js:579:10)
+/home/api-pesquisajus/apps_nodejs/home/server.js:1
+(function (exports, require, module, __filename, __dirname) { import mongoose from 'mongoose'
+                                                              ^^^^^^
+SyntaxError: Unexpected token import
+    at createScript (vm.js:56:10)
+    at Object.runInThisContext (vm.js:97:10)
+    at Module._compile (module.js:542:28)
+    at Object.Module._extensions..js (module.js:579:10)
+    at Module.load (module.js:487:32)
+    at tryModuleLoad (module.js:446:12)
+    at Function.Module._load (module.js:438:3)
+    at Object.<anonymous> (/opt/nodejs/6.11.1/lib/node_modules/pm2/lib/ProcessContainerFork.js:53:21)
+    at Module._compile (module.js:570:32)
+    at Object.Module._extensions..js (module.js:579:10)
+/home/api-pesquisajus/apps_nodejs/home/server.js:1
+(function (exports, require, module, __filename, __dirname) { import mongoose from 'mongoose'
+                                                              ^^^^^^
+SyntaxError: Unexpected token import
+    at createScript (vm.js:56:10)
+    at Object.runInThisContext (vm.js:97:10)
+    at Module._compile (module.js:542:28)
+    at Object.Module._extensions..js (module.js:579:10)
+    at Module.load (module.js:487:32)
+    at tryModuleLoad (module.js:446:12)
+    at Function.Module._load (module.js:438:3)
+    at Object.<anonymous> (/opt/nodejs/6.11.1/lib/node_modules/pm2/lib/ProcessContainerFork.js:53:21)
+    at Module._compile (module.js:570:32)
+    at Object.Module._extensions..js (module.js:579:10)
+/home/api-pesquisajus/apps_nodejs/home/server.js:1
+(function (exports, require, module, __filename, __dirname) { import mongoose from 'mongoose'
+                                                              ^^^^^^
+SyntaxError: Unexpected token import
+    at createScript (vm.js:56:10)
+    at Object.runInThisContext (vm.js:97:10)
+    at Module._compile (module.js:542:28)
+    at Object.Module._extensions..js (module.js:579:10)
+    at Module.load (module.js:487:32)
+    at tryModuleLoad (module.js:446:12)
+    at Function.Module._load (module.js:438:3)
+    at Object.<anonymous> (/opt/nodejs/6.11.1/lib/node_modules/pm2/lib/ProcessContainerFork.js:53:21)
+    at Module._compile (module.js:570:32)
+    at Object.Module._extensions..js (module.js:579:10)
+/home/api-pesquisajus/apps_nodejs/home/server.js:1
+(function (exports, require, module, __filename, __dirname) { import mongoose from 'mongoose'
+                                                              ^^^^^^
+SyntaxError: Unexpected token import
+    at createScript (vm.js:56:10)
+    at Object.runInThisContext (vm.js:97:10)
+    at Module._compile (module.js:542:28)
+    at Object.Module._extensions..js (module.js:579:10)
+    at Module.load (module.js:487:32)
+    at tryModuleLoad (module.js:446:12)
+    at Function.Module._load (module.js:438:3)
+    at Object.<anonymous> (/opt/nodejs/6.11.1/lib/node_modules/pm2/lib/ProcessContainerFork.js:53:21)
+    at Module._compile (module.js:570:32)
+    at Object.Module._extensions..js (module.js:579:10)
+/home/api-pesquisajus/apps_nodejs/home/server.js:1
+(function (exports, require, module, __filename, __dirname) { import mongoose from 'mongoose'
+                                                              ^^^^^^
+SyntaxError: Unexpected token import
+    at createScript (vm.js:56:10)
+    at Object.runInThisContext (vm.js:97:10)
+    at Module._compile (module.js:542:28)
+    at Object.Module._extensions..js (module.js:579:10)
+    at Module.load (module.js:487:32)
+    at tryModuleLoad (module.js:446:12)
+    at Function.Module._load (module.js:438:3)
+    at Object.<anonymous> (/opt/nodejs/6.11.1/lib/node_modules/pm2/lib/ProcessContainerFork.js:53:21)
+    at Module._compile (module.js:570:32)
+    at Object.Module._extensions..js (module.js:579:10)
+/home/api-pesquisajus/apps_nodejs/home/server.js:1
+(function (exports, require, module, __filename, __dirname) { import mongoose from 'mongoose'
+                                                              ^^^^^^
+SyntaxError: Unexpected token import
+    at createScript (vm.js:56:10)
+    at Object.runInThisContext (vm.js:97:10)
+    at Module._compile (module.js:542:28)
+    at Object.Module._extensions..js (module.js:579:10)
+    at Module.load (module.js:487:32)
+    at tryModuleLoad (module.js:446:12)
+    at Function.Module._load (module.js:438:3)
+    at Object.<anonymous> (/opt/nodejs/6.11.1/lib/node_modules/pm2/lib/ProcessContainerFork.js:53:21)
+    at Module._compile (module.js:570:32)
+    at Object.Module._extensions..js (module.js:579:10)
+/home/api-pesquisajus/apps_nodejs/home/server.js:1
+(function (exports, require, module, __filename, __dirname) { import mongoose from 'mongoose'
+                                                              ^^^^^^
+SyntaxError: Unexpected token import
+    at createScript (vm.js:56:10)
+    at Object.runInThisContext (vm.js:97:10)
+    at Module._compile (module.js:542:28)
+    at Object.Module._extensions..js (module.js:579:10)
+    at Module.load (module.js:487:32)
+    at tryModuleLoad (module.js:446:12)
+    at Function.Module._load (module.js:438:3)
+    at Object.<anonymous> (/opt/nodejs/6.11.1/lib/node_modules/pm2/lib/ProcessContainerFork.js:53:21)
+    at Module._compile (module.js:570:32)
+    at Object.Module._extensions..js (module.js:579:10)
+/home/api-pesquisajus/apps_nodejs/home/server.js:1
+(function (exports, require, module, __filename, __dirname) { import mongoose from 'mongoose'
+                                                              ^^^^^^
+SyntaxError: Unexpected token import
+    at createScript (vm.js:56:10)
+    at Object.runInThisContext (vm.js:97:10)
+    at Module._compile (module.js:542:28)
+    at Object.Module._extensions..js (module.js:579:10)
+    at Module.load (module.js:487:32)
+    at tryModuleLoad (module.js:446:12)
+    at Function.Module._load (module.js:438:3)
+    at Object.<anonymous> (/opt/nodejs/6.11.1/lib/node_modules/pm2/lib/ProcessContainerFork.js:53:21)
+    at Module._compile (module.js:570:32)
+    at Object.Module._extensions..js (module.js:579:10)
+/home/api-pesquisajus/apps_nodejs/home/server.js:1
+(function (exports, require, module, __filename, __dirname) { import mongoose from 'mongoose'
+                                                              ^^^^^^
+SyntaxError: Unexpected token import
+    at createScript (vm.js:56:10)
+    at Object.runInThisContext (vm.js:97:10)
+    at Module._compile (module.js:542:28)
+    at Object.Module._extensions..js (module.js:579:10)
+    at Module.load (module.js:487:32)
+    at tryModuleLoad (module.js:446:12)
+    at Function.Module._load (module.js:438:3)
+    at Object.<anonymous> (/opt/nodejs/6.11.1/lib/node_modules/pm2/lib/ProcessContainerFork.js:53:21)
+    at Module._compile (module.js:570:32)
+    at Object.Module._extensions..js (module.js:579:10)
+/home/api-pesquisajus/apps_nodejs/home/server.js:1
+(function (exports, require, module, __filename, __dirname) { import mongoose from 'mongoose'
+                                                              ^^^^^^
+SyntaxError: Unexpected token import
+    at createScript (vm.js:56:10)
+    at Object.runInThisContext (vm.js:97:10)
+    at Module._compile (module.js:542:28)
+    at Object.Module._extensions..js (module.js:579:10)
+    at Module.load (module.js:487:32)
+    at tryModuleLoad (module.js:446:12)
+    at Function.Module._load (module.js:438:3)
+    at Object.<anonymous> (/opt/nodejs/6.11.1/lib/node_modules/pm2/lib/ProcessContainerFork.js:53:21)
+    at Module._compile (module.js:570:32)
+    at Object.Module._extensions..js (module.js:579:10)
+/home/api-pesquisajus/apps_nodejs/home/server.js:1
+(function (exports, require, module, __filename, __dirname) { import mongoose from 'mongoose'
+                                                              ^^^^^^
+SyntaxError: Unexpected token import
+    at createScript (vm.js:56:10)
+    at Object.runInThisContext (vm.js:97:10)
+    at Module._compile (module.js:542:28)
+    at Object.Module._extensions..js (module.js:579:10)
+    at Module.load (module.js:487:32)
+    at tryModuleLoad (module.js:446:12)
+    at Function.Module._load (module.js:438:3)
+    at Object.<anonymous> (/opt/nodejs/6.11.1/lib/node_modules/pm2/lib/ProcessContainerFork.js:53:21)
+    at Module._compile (module.js:570:32)
+    at Object.Module._extensions..js (module.js:579:10)
+/home/api-pesquisajus/apps_nodejs/home/server.js:1
+(function (exports, require, module, __filename, __dirname) { import mongoose from 'mongoose'
+                                                              ^^^^^^
+SyntaxError: Unexpected token import
+    at createScript (vm.js:56:10)
+    at Object.runInThisContext (vm.js:97:10)
+    at Module._compile (module.js:542:28)
+    at Object.Module._extensions..js (module.js:579:10)
+    at Module.load (module.js:487:32)
+    at tryModuleLoad (module.js:446:12)
+    at Function.Module._load (module.js:438:3)
+    at Object.<anonymous> (/opt/nodejs/6.11.1/lib/node_modules/pm2/lib/ProcessContainerFork.js:53:21)
+    at Module._compile (module.js:570:32)
+    at Object.Module._extensions..js (module.js:579:10)
