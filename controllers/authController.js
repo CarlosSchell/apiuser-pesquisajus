@@ -33,23 +33,24 @@ const login = asyncHandler(async (req, res, next) => {
     return next(new AppError('Erro do servidor na geração do token !', 500))
   }
 
-  const userLogged = await User.findOneAndUpdate(
+  const user = await User.findOneAndUpdate(
     { email }, 
     { token }, 
     { new: true}
   )
 
-  if (!userLogged) {
+  if (!user) {
     return next(new AppError('Erro ao gravar o login do usuário', 500))
   }
 
-  userLogged.password = undefined
+  user.password = undefined
   res.status(201).json({
     status: 'success',
     token,
-    userLogged,
+    user,
   })
 })
+
 
 const register = asyncHandler(async (req, res, next) => {
   const { email, role } = req.body
@@ -69,7 +70,7 @@ const register = asyncHandler(async (req, res, next) => {
     return next(new AppError('Erro do servidor na geração do token !', 500))
   }
 
-  const newUser = await User.create({
+  const user = await User.create({
     name: req.body.name,
     email: req.body.email,
     role: 'user',
@@ -78,7 +79,7 @@ const register = asyncHandler(async (req, res, next) => {
     token: token,
   })
 
-  if (!newUser) {
+  if (!user) {
     return next(new AppError('Erro ao gravar o novo usuário', 500))
   }
 
@@ -89,11 +90,11 @@ const register = asyncHandler(async (req, res, next) => {
   // await new Email(newUser, url).sendWelcome()
   //
 
-  newUser.password = undefined
+  user.password = undefined
   res.status(201).json({
     status: 'success',
     token,
-    newUser,
+    user,
   })
 })
 
