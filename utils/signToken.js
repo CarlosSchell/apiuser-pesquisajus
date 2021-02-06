@@ -12,8 +12,7 @@ export const signToken = ({ email, role }) => {
   let tokenGenerated
   try {
     tokenGenerated = jwt.sign(tokenData, tokenKey, tokenOptions)
-    console.log(tokenGenerated)
-    //return tokenGenerated
+    //console.log(tokenGenerated)
   } catch (err) {
     return next(new AppError('Erro do servidor na geração do token !', 500))
   }

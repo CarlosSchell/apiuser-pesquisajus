@@ -27,11 +27,10 @@ const login = asyncHandler(async (req, res, next) => {
   ) {
     return next(new AppError('O email ou a senha estão incorretos !', 401))
   }
-  let a = 'eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNpbWJhQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNjEyNTY0NDA4LCJleHAiOjE2MTI2NTA4MDh9.NnmCPbWusB8NoLbhpqBrHsnckdTUQajcybioygqojxY1uvpS8SipSr44CMq5yr_yqLIHykjKsPk1sGtezpnp0sU7MA8qNOhBxrPlK30jTJxseD66rKRMhFB1D1IRuxYFJpaqE2XYWwqQkx_TlG1GkWPpRvY35qzrY9onclJKxwa2Df6ZCcnT7ZSSBL4xzZdvmjvk3dU1qRGwBke0SaaE0RsNV5Jy6OI5hJoMXti1RBxH35pec44Np9TaBZh06q4p_B7JV0i366dc40gHIEny0wTD8zx02HDeY5iXfRYTkQwxMEWXLiB8AdHTwg3C2gh6BhA7a8HImq92uzNc7kXBZg'
-  let token = signToken({ email, role })
-  console.log('Token dentro do Login : ', token)
-  const user = await User.findOneAndUpdate({ email }, { token }, { new: true })
 
+  let token = signToken({ email, role })
+
+  const user = await User.findOneAndUpdate({ email }, { token }, { new: true })
   if (!user) {
     return next(new AppError('Erro ao gravar o login do usuário', 500))
   }
@@ -52,12 +51,7 @@ const register = asyncHandler(async (req, res, next) => {
     return next(new AppError('User already exists', 400))
   }
 
-  let token = ''
-  try {
-    token = signToken({ email, role })
-  } catch (err) {
-    return next(new AppError('Erro do servidor na geração do token !', 500))
-  }
+  token = signToken({ email, role })
 
   const user = await User.create({
     name: req.body.name,
