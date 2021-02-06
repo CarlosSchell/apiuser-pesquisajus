@@ -9,8 +9,12 @@ export const signToken = ({ email, role }) => {
   //const tokenKey = fs.readFileSync('private.key')
   // Algoritmo RSA 512 - Chaves com 1024 bits de tamanho
   const tokenKey = process.env.JWT_PRIVATE
-  let tokenGenerated = jwt.sign(tokenData, tokenKey, tokenOptions)
-  //   , (err) => {eturn new AppError('Erro na geração do Token !', 403)})
-  console.log(tokenGenerated)
+
+  try {
+    let tokenGenerated = jwt.sign(tokenData, tokenKey, tokenOptions)
+    console.log(tokenGenerated)
+  } catch (err) {
+    return next(new AppError('Erro do servidor na geração do token !', 500))
+  }
   return tokenGenerated
 }
