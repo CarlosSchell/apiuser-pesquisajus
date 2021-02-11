@@ -1,6 +1,6 @@
-import nodemailer from 'nodemailer'
-import pug from 'pug'
-import { htmlToText } from 'html-to-text'
+const nodemailer = require('nodemailer')
+const pug = require('pug')
+const { htmlToText } = require('html-to-text')
 
 // module.exports = class Email {
 

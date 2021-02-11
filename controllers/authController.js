@@ -1,15 +1,24 @@
-import crypto from 'crypto'
-import { promisify } from 'util'
-import asyncHandler from 'express-async-handler'
-import jwt from 'jsonwebtoken'
+const crypto = require('crypto')
+const { promisify } = require('util')
+const jwt  = require('jsonwebtoken')
+const asyncHandler = require('express-async-handler')
+const User = require('./../models/userModel.js')
+const AppError = require('./../utils/appError.js')
+const { signToken }  = require('./../utils/signToken.js')
+// const sendMail  = require('./../utils/sendMail.js')
+const { CLIENT_RENEG_LIMIT }  = require('tls')
 
-import User from './../models/userModel.js'
-import AppError from './../utils/appError.js'
-//import createSendToken from './../utils/createSendToken.js
-import { signToken } from './../utils/signToken.js'
-//import Email from './../utils/email.js'
-import sendMail from './../utils/sendMail.js'
-import { CLIENT_RENEG_LIMIT } from 'tls'
+// import crypto from 'crypto'
+// import { promisify } from 'util'
+// import jwt from 'jsonwebtoken'
+// import asyncHandler from 'express-async-handler'
+// import User from './../models/userModel.js'
+// import AppError from './../utils/appError.js'
+//// import createSendToken from './../utils/createSendToken.js
+// import { signToken } from './../utils/signToken.js'
+//// import Email from './../utils/email.js'
+// import sendMail from './../utils/sendMail.js'
+// import { CLIENT_RENEG_LIMIT } from 'tls'
 
 const login = asyncHandler(async (req, res, next) => {
   const { email, password, role } = req.body
@@ -313,7 +322,7 @@ const updateMyPassword = asyncHandler(async (req, res, next) => {
   createSendToken(user, 200, req, res)
 })
 
-export {
+module.exports = {
   register,
   login,
   logout,

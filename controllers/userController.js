@@ -1,16 +1,16 @@
-import asyncHandler from 'express-async-handler'
-import User from './../models/userModel.js'
+// import asyncHandler from 'express-async-handler'
+// import User from './../models/userModel.js'
+// import AppError from './../utils/appError.js'
+// import { uploadUserPhoto, resizeUserPhoto } from './../utils/uploadUserPhoto.js'
 
-import AppError from './../utils/appError.js'
-
-import { uploadUserPhoto, resizeUserPhoto } from './../utils/uploadUserPhoto.js'
-
-// import factory from './handlerFactory.js'
+const asyncHandler = require('express-async-handler')
+const User = require('./../models/userModel.js')
+const AppError = require('./../utils/appError.js')
+// const { uploadUserPhoto, resizeUserPhoto } = require('./../utils/uploadUserPhoto.js')
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
 // @access  Public
-
 const getMe = (req, res, next) => {
   req.params.id = req.user.id
   next()
@@ -94,7 +94,7 @@ const getOneUser = asyncHandler(async (req, res, next) => {
   })
 })
 
-export { getAllUsers, getOneUser }
+module.exports =  { getAllUsers, getOneUser }
 
 // const filterObj = (obj, ...allowedFields) => {
 //   const newObj = {};

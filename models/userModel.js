@@ -1,8 +1,14 @@
-import mongoose from 'mongoose'
-import validator from 'validator'
-import crypto from 'crypto'
-import bcrypt from 'bcryptjs'
-import { stringify } from 'querystring'
+const mongoose = require('mongoose')
+const validator =require('validator')
+const crypto = require('crypto')
+const bcrypt = require('bcryptjs')
+// const { stringify } = require('querystring')
+
+// import mongoose from 'mongoose'
+// import validator from 'validator'
+// import crypto from 'crypto'
+// import bcrypt from 'bcryptjs'
+// import { stringify } from 'querystring'
 
 const userSchema = new mongoose.Schema(
   {
@@ -125,4 +131,4 @@ userSchema.methods.createPasswordResetToken = function () {
 
 const User = mongoose.model('User', userSchema)
 
-export default User
+module.exports = User

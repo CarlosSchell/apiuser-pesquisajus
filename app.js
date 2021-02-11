@@ -1,33 +1,45 @@
-import mongoose from 'mongoose'
-import express from 'express'
-import dotenv from 'dotenv'
-import path from 'path'
-import morgan from 'morgan'
-import rateLimit from 'express-rate-limit'
-import helmet from 'helmet'
-import mongoSanitize from 'express-mongo-sanitize'
-import xss from 'xss-clean'
-import hpp from 'hpp'
-import cookieParser from 'cookie-parser'
-import bodyParser from 'body-parser'
-import compression from 'compression'
-import cors from 'cors'
+const mongoose = require('mongoose')
+const express = require('express')
+const dotenv = require('dotenv')
+const path = require('path')
+const morgan = require('morgan')
+const rateLimit = require('express-rate-limit')
+const helmet = require('helmet')
+const mongoSanitize = require('express-mongo-sanitize')
+const xss = require('xss-clean')
+const hpp = require('hpp')
+const cookieParser = require('cookie-parser')
+const bodyParser = require('body-parser')
+const compression = require('compression')
+const cors = require('cors')
+const AppError = require('./utils/appError.js')
+const globalErrorHandler = require('./controllers/errorController.js')
+const userRouter = require('./routes/userRoutes.js')
 
-import AppError from './utils/appError.js'
-import globalErrorHandler from './controllers/errorController.js'
-// import tourRouter from './routes/tourRoutes.js'
-import userRouter from './routes/userRoutes.js'
-// import reviewRouter from './routes/reviewRoutes.js'
-// import bookingRouter from './routes/bookingRoutes.js'
-// import bookingController from './controllers/bookingController.js'
-// import viewRouter from './routes/viewRoutes.js'
+// import mongoose from 'mongoose'
+// import express from 'express'
+// import dotenv from 'dotenv'
+// import path from 'path'
+// import morgan from 'morgan'
+// import rateLimit from 'express-rate-limit'
+// import helmet from 'helmet'
+// import mongoSanitize from 'express-mongo-sanitize'
+// import xss from 'xss-clean'
+// import hpp from 'hpp'
+// import cookieParser from 'cookie-parser'
+// import bodyParser from 'body-parser'
+// import compression from 'compression'
+// import cors from 'cors'
+// import AppError from './utils/appError.js'
+// import globalErrorHandler from './controllers/errorController.js'
+// import userRouter from './routes/userRoutes.js'
 
 // Start express app
 const app = express()
 
 app.enable('trust proxy')
 
-const __dirname = path.resolve()
+// const __dirname = path.resolve()
 
 // 1) GLOBAL MIDDLEWARES
 // Implement CORS
@@ -103,10 +115,7 @@ app.use((req, res, next) => {
 })
 
 // 3) ROUTES
-//app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter)
-//app.use('/api/v1/reviews', reviewRouter);
-//app.use('/api/v1/bookings', bookingRouter);
 
 app.all('*', (req, res, next) => {
   next(
@@ -119,4 +128,4 @@ app.all('*', (req, res, next) => {
 
 app.use(globalErrorHandler)
 
-export default app
+module.exports = app

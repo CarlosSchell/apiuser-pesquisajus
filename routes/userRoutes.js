@@ -1,6 +1,6 @@
-import express from 'express'
-import { getAllUsers, getOneUser } from './../controllers/userController.js'
-import {
+const express = require('express')
+const { getAllUsers, getOneUser } = require('./../controllers/userController.js')
+const {
   register,
   login,
   logout,
@@ -9,7 +9,7 @@ import {
   forgotPassword,
   resetPassword,
   updateMyPassword,
-} from './../controllers/authController.js'
+}  = require('./../controllers/authController.js')
 
 const router = express.Router()
 
@@ -49,4 +49,4 @@ router.route('/:id').get(getOneUser)
 // .patch(userController.updateUser)
 // .delete(userController.deleteUser);
 
-export default router
+module.exports = router

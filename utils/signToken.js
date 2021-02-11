@@ -1,6 +1,7 @@
-import jwt from 'jsonwebtoken'
+const jwt  = require('jsonwebtoken')
+// jwt from 'jsonwebtoken'
 
-export const signToken = ({ email, role }) => {
+const signToken = ({ email, role }) => {
   const tokenData = { email, role }
   const tokenOptions = {
     algorithm: 'RS512',
@@ -18,3 +19,5 @@ export const signToken = ({ email, role }) => {
   }
   return tokenGenerated
 }
+
+module.exports = signToken

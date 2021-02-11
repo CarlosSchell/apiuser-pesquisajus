@@ -1,6 +1,6 @@
-import multer from 'multer'
-import sharp from 'sharp'
-import asyncHandler from 'express-async-handler'
+const multer = require('multer')
+const sharp = require('sharp')
+const asyncHandler = require('express-async-handler')
 
 // const multerStorage = multer.diskStorage({
 //   destination: (req, file, cb) => {
