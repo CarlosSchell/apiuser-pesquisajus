@@ -1,7 +1,7 @@
 {
   "name": "usersapi",
   "version": "1.0.0",
-  "description": "Built using modern technologies: node.js, express, mongoDB, mongoose and friends 😁",
+  "description": "api-pesquisajus.com.br",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
