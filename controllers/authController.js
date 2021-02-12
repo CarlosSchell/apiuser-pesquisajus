@@ -1,35 +1,22 @@
 const crypto = require('crypto')
 const { promisify } = require('util')
-const jwt  = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 const asyncHandler = require('express-async-handler')
 const User = require('./../models/userModel.js')
 const AppError = require('./../utils/appError.js')
-const { signToken }  = require('./../utils/signToken.js')
+const signToken = require('./../utils/signToken.js')
+const verifyToken = require('./../utils/verifyToken.js')
 // const sendMail  = require('./../utils/sendMail.js')
-const { CLIENT_RENEG_LIMIT }  = require('tls')
-
-// import crypto from 'crypto'
-// import { promisify } from 'util'
-// import jwt from 'jsonwebtoken'
-// import asyncHandler from 'express-async-handler'
-// import User from './../models/userModel.js'
-// import AppError from './../utils/appError.js'
-//// import createSendToken from './../utils/createSendToken.js
-// import { signToken } from './../utils/signToken.js'
-//// import Email from './../utils/email.js'
-// import sendMail from './../utils/sendMail.js'
-// import { CLIENT_RENEG_LIMIT } from 'tls'
+const { CLIENT_RENEG_LIMIT } = require('tls')
 
 const login = asyncHandler(async (req, res, next) => {
   const { email, password, role } = req.body
   // const role = 'user'
-
   if (!email || !password) {
     return next(new AppError('Please provide email and password!', 400))
   }
 
   const userExists = await User.findOne({ email })
-
   if (
     !userExists ||
     !(await userExists.matchPassword(password, userExists.password))
@@ -39,17 +26,30 @@ const login = asyncHandler(async (req, res, next) => {
 
   let token = signToken({ email, role })
 
-  const user = await User.findOneAndUpdate({ email }, { token }, { new: true })
-  if (!user) {
-    return next(new AppError('Erro ao gravar o login do usuário', 500))
-  }
+  if (token) {
+    const data = await User.findOneAndUpdate(
+      { email },
+      { token },
+      { new: true }
+    )
+    if (!data) {
+      return next(new AppError('Erro ao gravar o login do usuário', 500))
+    }
 
-  user.password = undefined
-  res.status(201).json({
-    status: 'success',
-    token,
-    user,
-  })
+    user = {
+      name: data.name,
+      email: data.email,
+      role: data.role,
+      token: data.token,
+      isLoggedInUser: true,
+    }
+    user.password = undefined
+
+    res.status(201).json({
+      status: 'success',
+      user,
+    })
+  }
 })
 
 const register = asyncHandler(async (req, res, next) => {
@@ -60,41 +60,51 @@ const register = asyncHandler(async (req, res, next) => {
     return next(new AppError('User already exists', 400))
   }
 
-  token = signToken({ email, role })
+  let token = signToken({ email, role }, next)
 
-  const user = await User.create({
-    name: req.body.name,
-    email: req.body.email,
-    role: 'user',
-    password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
-    token: token,
-  })
+  if (token) {
+    const data = await User.create({
+      name: req.body.name,
+      email: req.body.email,
+      role: 'user',
+      password: req.body.password,
+      passwordConfirm: req.body.passwordConfirm,
+      token: token,
+    })
 
-  if (!user) {
-    return next(new AppError('Erro ao gravar o novo usuário', 500))
+    if (!data) {
+      return next(new AppError('Erro ao gravar o novo usuário', 500))
+    }
+
+    // Envia email de confirmação
+    // console.log(newUser)
+    // const url = `${req.protocol}://${req.get('host')}/me`
+    // console.log(url);
+    // await new Email(newUser, url).sendWelcome()
+    //
+
+    user = {
+      name: data.email.split('@')[0],
+      email: data.email,
+      role: data.role,
+      token: data.token,
+      isLoggedInUser: false,
+    }
+    user.password = undefined
+
+    res.status(201).json({
+      status: 'success',
+      user,
+    })
   }
-
-  // Envia email de confirmação
-  // console.log(newUser)
-  // const url = `${req.protocol}://${req.get('host')}/me`
-  // console.log(url);
-  // await new Email(newUser, url).sendWelcome()
-  //
-
-  user.password = undefined
-  res.status(201).json({
-    status: 'success',
-    token,
-    user,
-  })
 })
 
 const logout = (req, res) => {
-  res.cookie('jwt', 'loggedout', {
-    expires: new Date(Date.now() + 10 * 1000),
-    httpOnly: true,
-  })
+  // res.cookie('jwt', 'loggedout', {
+  //   expires: new Date(Date.now() + 10 * 1000),
+  //   httpOnly: true,
+  // })
+  // isLoggedInUser = false
   res.status(200).json({ status: 'success' })
 }
 
@@ -113,21 +123,12 @@ const protect = asyncHandler(async (req, res, next) => {
 
   if (!token) {
     return next(
-      new AppError('You are not logged in! Please log in to get access.', 401)
+      new AppError('Por favor faça login para acessar o sistema.', 401)
     )
   }
 
   // 2) Read and Verify token
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_PUBLIC, {
-    algorithm: ['RS256'],
-  })
-
-  // Como o token é gerado
-  // const tokenGenerated = jwt.sign(
-  //   payload,
-  //   process.env.JWT_SECRET,
-  //   { algorithm: ['RS256'], expiresIn: (process.env.JWT_TOKEN_EXPIRES_IN_HOURS * 60 * 60)
-  // })
+  const decoded = verifyToken(token, next)
 
   // console.log(decoded)
 
@@ -137,8 +138,6 @@ const protect = asyncHandler(async (req, res, next) => {
 
   //console.log(req.email)
   //console.log(req.role)
-
-  // console.log(decoded)
 
   // // 3) Check if user still exists
   // const currentUser = await User.findOne(decoded.email)
@@ -200,7 +199,6 @@ const restrictTo = (roles) => {
 
   return (req, res, next) => {
     // roles ['admin', 'master']
-
     //console.log(req.role)
 
     if (!roles.includes(req.role)) {
@@ -309,7 +307,7 @@ const updateMyPassword = asyncHandler(async (req, res, next) => {
 
   // 2) Check if POSTed current password is correct
   if (!(await user.matchPassword(req.body.passwordCurrent, user.password))) {
-    return next(new AppError('Your current password is wrong.', 401))
+    return next(new AppError('O seu password atual está errado!', 401))
   }
 
   // 3) If so, update password

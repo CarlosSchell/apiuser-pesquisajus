@@ -14,7 +14,6 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, 'Entre com o seu nome de usuário até 20 letras!'],
     },
     email: {
       type: String,
@@ -58,9 +57,15 @@ const userSchema = new mongoose.Schema(
       default: true,
       select: false,
     },
+    isLoggedInUser: {
+      type: Boolean,
+      default: false,
+      select: false,
+    },
     passwordResetToken: String,
     passwordResetExpires: Date,
     token: String,
+    processos: []
   },
   {
     timestamps: true,

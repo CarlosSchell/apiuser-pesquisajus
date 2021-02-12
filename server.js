@@ -1,11 +1,6 @@
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 
-// import mongoose from 'mongoose'
-// import dotenv from 'dotenv'
-
-// Transition  to the Kinghost Mongodb server.
-
 // process.on('uncaughtException', (err) => {
 //   console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...')
 //   console.log(err.name, err.message)

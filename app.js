@@ -1,6 +1,4 @@
-const mongoose = require('mongoose')
 const express = require('express')
-const dotenv = require('dotenv')
 const path = require('path')
 const morgan = require('morgan')
 const rateLimit = require('express-rate-limit')
@@ -16,43 +14,22 @@ const AppError = require('./utils/appError.js')
 const globalErrorHandler = require('./controllers/errorController.js')
 const userRouter = require('./routes/userRoutes.js')
 
-// import mongoose from 'mongoose'
-// import express from 'express'
-// import dotenv from 'dotenv'
-// import path from 'path'
-// import morgan from 'morgan'
-// import rateLimit from 'express-rate-limit'
-// import helmet from 'helmet'
-// import mongoSanitize from 'express-mongo-sanitize'
-// import xss from 'xss-clean'
-// import hpp from 'hpp'
-// import cookieParser from 'cookie-parser'
-// import bodyParser from 'body-parser'
-// import compression from 'compression'
-// import cors from 'cors'
-// import AppError from './utils/appError.js'
-// import globalErrorHandler from './controllers/errorController.js'
-// import userRouter from './routes/userRoutes.js'
-
 // Start express app
 const app = express()
 
 app.enable('trust proxy')
-
 // const __dirname = path.resolve()
 
 // 1) GLOBAL MIDDLEWARES
-// Implement CORS
 app.use(cors())
 // Access-Control-Allow-Origin *
-
 // api.natours.com, front-end natours.com
 // app.use(cors({
 //   origin: 'https://www.natours.com'
 // }))
 
+// app.options('/api/v1/tours/:id', cors())
 app.options('*', cors())
-// app.options('/api/v1/tours/:id', cors());
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')))
@@ -111,6 +88,7 @@ app.use(compression())
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString()
   // console.log(req.cookies);
+  // console.log('Passou pelo middleware : ', new Date().toISOString());
   next()
 })
 
