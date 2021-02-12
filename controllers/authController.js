@@ -10,21 +10,30 @@ const verifyToken = require('./../utils/verifyToken.js')
 const { CLIENT_RENEG_LIMIT } = require('tls')
 
 const login = asyncHandler(async (req, res, next) => {
-  const { email, password, role } = req.body
-  // const role = 'user'
+  const { email, password } = req.body
   if (!email || !password) {
     return next(new AppError('Please provide email and password!', 400))
   }
 
-  const userExists = await User.findOne({ email })
+  const user = await User.findOne({ email })
   if (
-    !userExists ||
-    !(await userExists.matchPassword(password, userExists.password))
+    !user ||
+    !(await user.matchPassword(password, user.password))
   ) {
     return next(new AppError('O email ou a senha estão incorretos !', 401))
   }
 
+  const role = user.role
+  // if (!role) {
+  //   role = "user"
+  // }
+
+  console.log('Login Email : ', email)
+  console.log('Login role : ', role)
+
   let token = signToken({ email, role })
+
+  console.log('Login token : ', token)
 
   if (token) {
     const data = await User.findOneAndUpdate(
@@ -36,24 +45,27 @@ const login = asyncHandler(async (req, res, next) => {
       return next(new AppError('Erro ao gravar o login do usuário', 500))
     }
 
-    user = {
-      name: data.name,
-      email: data.email,
-      role: data.role,
-      token: data.token,
-      isLoggedInUser: true,
-    }
-    user.password = undefined
-
     res.status(201).json({
       status: 'success',
-      user,
+      user: {
+        name: data.name,
+        email: data.email,
+        role: data.role,
+        token: data.token
+      }
     })
   }
 })
 
 const register = asyncHandler(async (req, res, next) => {
-  const { email, role } = req.body
+  let { email, role } = req.body
+  if (!role) {
+    role = 'user'
+    req.body.role = 'user'
+  }
+
+  console.log('Register Email : ', email)
+  console.log('Register role : ', role)
 
   const userExists = await User.findOne({ email })
   if (userExists) {
@@ -62,11 +74,13 @@ const register = asyncHandler(async (req, res, next) => {
 
   let token = signToken({ email, role }, next)
 
+  console.log('Register Token : ', token)
+
   if (token) {
     const data = await User.create({
       name: req.body.name,
-      email: req.body.email,
-      role: 'user',
+      email,
+      role,
       password: req.body.password,
       passwordConfirm: req.body.passwordConfirm,
       token: token,
@@ -117,9 +131,7 @@ const protect = asyncHandler(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1]
-  } else if (req.cookies.jwt) {
-    token = req.cookies.jwt
-  }
+  } 
 
   if (!token) {
     return next(
@@ -128,15 +140,16 @@ const protect = asyncHandler(async (req, res, next) => {
   }
 
   // 2) Read and Verify token
-  const decoded = verifyToken(token, next)
-
+  const decoded = await verifyToken(token, next)
   // console.log(decoded)
 
-  // 3} Assign Token data do req
+  // 3} Put extracted token data in the req (not in the body !!!)
   req.email = decoded.email
   req.role = decoded.role
 
-  //console.log(req.email)
+  console.log('Token decoded data : ', decoded)
+  console.log('Inside protect : req.body.email : ', req.body.email)
+  console.log('Inside protect : req.body.role  : ', req.body.role)
   //console.log(req.role)
 
   // // 3) Check if user still exists

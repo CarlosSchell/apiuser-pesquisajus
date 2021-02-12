@@ -1,5 +1,7 @@
 const express = require('express')
 const { getAllUsers, getOneUser } = require('./../controllers/userController.js')
+const { getProcessos,gravaProcessos }  = require('./../controllers/procController.js')
+
 const {
   register,
   login,
@@ -31,6 +33,10 @@ router
 router.use(protect)
 
 router.patch('/updateMyPassword', updateMyPassword)
+
+router.get('/getprocessos', getProcessos)
+router.patch('/gravaprocessos', gravaProcessos)
+
 // router.get('/me', userController.getMe, userController.getUser);
 
 // router.patch(
