@@ -358,7 +358,7 @@ const restrictTo = (roles) => {
 }
 
 //
-const resetPassword = asyncHandler(async (req, res, next) => {
+const updatePassword = asyncHandler(async (req, res, next) => {
   console.log('Entrou no resetPassword !')
 
   const token = req.params.token
@@ -442,6 +442,6 @@ module.exports = {
   protect,
   restrictTo,
   forgotPassword,
-  resetPassword,
+  updatePassword,
   updateMyPassword,
 }
