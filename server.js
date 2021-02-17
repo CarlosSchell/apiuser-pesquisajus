@@ -9,6 +9,9 @@ const dotenv = require('dotenv')
 
 dotenv.config()
 
+// const app_host = process.env.APP_HOST
+// console.log('Domínio do Servidor : ', app_host)
+
 const app = require('./app.js')
 
 const DB = process.env.DATABASE.replace(

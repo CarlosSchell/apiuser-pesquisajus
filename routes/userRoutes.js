@@ -1,5 +1,5 @@
 const express = require('express')
-const { getAllUsers, getOneUser } = require('./../controllers/userController.js')
+const { getAllUsers, getMe, getOneUser } = require('./../controllers/userController.js')
 const { getProcessos,gravaProcessos }  = require('./../controllers/procController.js')
 
 const {
@@ -8,36 +8,29 @@ const {
   logout,
   protect,
   restrictTo,
-  forgotPassword,
-  resetPassword,
   updateMyPassword,
 }  = require('./../controllers/authController.js')
 
 const router = express.Router()
 
 router.post('/register', register)
+// router.get('/confirm/:token', confirmUserEmail)
 router.post('/login', login)
-router.get('/logout', logout)
-
-router.post('/forgotPassword', forgotPassword)
-router.patch('/resetPassword/:token', resetPassword)
-
-// Protect all routes after this middleware
-// router.use(protect)
+router.patch('/logout', logout)
 
 router
   .route('/')
   .get(getAllUsers)
 //.post(userController.createUser);
 
+// Protect all routes after this middleware
 router.use(protect)
+// router.use(restrictTo(['user','premium','master','admin']));
 
 router.patch('/updateMyPassword', updateMyPassword)
 
 router.get('/getprocessos', getProcessos)
 router.patch('/gravaprocessos', gravaProcessos)
-
-// router.get('/me', userController.getMe, userController.getUser);
 
 // router.patch(
 //   '/updateMe',

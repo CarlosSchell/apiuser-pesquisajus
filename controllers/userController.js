@@ -1,8 +1,3 @@
-// import asyncHandler from 'express-async-handler'
-// import User from './../models/userModel.js'
-// import AppError from './../utils/appError.js'
-// import { uploadUserPhoto, resizeUserPhoto } from './../utils/uploadUserPhoto.js'
-
 const asyncHandler = require('express-async-handler')
 const User = require('./../models/userModel.js')
 const AppError = require('./../utils/appError.js')
@@ -12,7 +7,8 @@ const AppError = require('./../utils/appError.js')
 // @route   POST /api/users/login
 // @access  Public
 const getMe = (req, res, next) => {
-  req.params.id = req.user.id
+  console.log(req.params)
+  //req.params.email = req.user.email
   next()
 }
 
@@ -61,13 +57,6 @@ const createUser = (req, res) => {
   })
 }
 
-//const getUser = factory.getOne(User);
-//const getAllUsers = factory.getAll(User);
-
-// Do NOT update passwords with this!
-// const updateUser = factory.updateOne(User);
-// const deleteUser = factory.deleteOne(User);
-
 const getAllUsers = asyncHandler(async (req, res, next) => {
   let query = User.find({})
   const user = await query
@@ -94,7 +83,7 @@ const getOneUser = asyncHandler(async (req, res, next) => {
   })
 })
 
-module.exports =  { getAllUsers, getOneUser }
+module.exports =  { getAllUsers, getMe, getOneUser }
 
 // const filterObj = (obj, ...allowedFields) => {
 //   const newObj = {};

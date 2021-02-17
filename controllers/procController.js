@@ -6,7 +6,7 @@ const User = require('./../models/userModel.js')
 const AppError = require('./../utils/appError.js')
 const signToken = require('./../utils/signToken.js')
 const verifyToken = require('./../utils/verifyToken.js')
-// const sendMail  = require('./../utils/sendMail.js')
+
 const { CLIENT_RENEG_LIMIT } = require('tls')
 
 const getProcessos = asyncHandler(async (req, res, next) => {

@@ -12,6 +12,7 @@ const compression = require('compression')
 const cors = require('cors')
 const AppError = require('./utils/appError.js')
 const globalErrorHandler = require('./controllers/errorController.js')
+const authRouter = require('./routes/authRoutes.js')
 const userRouter = require('./routes/userRoutes.js')
 
 // Start express app
@@ -25,7 +26,7 @@ app.use(cors())
 // Access-Control-Allow-Origin *
 // api.natours.com, front-end natours.com
 // app.use(cors({
-//   origin: 'https://www.natours.com'
+//   origin: 'https://189.6.236.218'  // 'https://www.pesquisajus.com', 
 // }))
 
 // app.options('/api/v1/tours/:id', cors())
@@ -39,6 +40,10 @@ app.use(helmet())
 
 // Development logging
 if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'))
+}
+
+if (process.env.NODE_ENV === 'production') {
   app.use(morgan('dev'))
 }
 
@@ -93,7 +98,9 @@ app.use((req, res, next) => {
 })
 
 // 3) ROUTES
-app.use('/api/v1/users', userRouter)
+app.use('/v1', authRouter)
+app.use('/v1/users', userRouter)
+//app.use('/v1/processos', procRouter)
 
 app.all('*', (req, res, next) => {
   next(

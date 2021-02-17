@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const validator =require('validator')
+const validator = require('validator')
 const crypto = require('crypto')
 const bcrypt = require('bcryptjs')
 // const { stringify } = require('querystring')
@@ -55,17 +55,23 @@ const userSchema = new mongoose.Schema(
     isActiveUser: {
       type: Boolean,
       default: true,
-      select: false,
+      select: true,
     },
     isLoggedInUser: {
       type: Boolean,
       default: false,
-      select: false,
+      select: true,
+    },
+    isConfirmedUser: {
+      type: Boolean,
+      default: false,
+      select: true,
     },
     passwordResetToken: String,
     passwordResetExpires: Date,
     token: String,
-    processos: []
+    tokenConfirm: String,
+    processos: [],
   },
   {
     timestamps: true,
@@ -98,10 +104,7 @@ userSchema.pre(/^find/, function (next) {
   next()
 })
 
-userSchema.methods.matchPassword = async function (
-  candidatePassword,
-  userPassword
-) {
+userSchema.methods.matchPassword = async function (candidatePassword, userPassword) {
   return await bcrypt.compare(candidatePassword, userPassword)
 }
 
@@ -118,21 +121,6 @@ userSchema.methods.matchPassword = async function (
 //   // False means NOT changed
 //   return false
 // }
-
-userSchema.methods.createPasswordResetToken = function () {
-  const resetToken = crypto.randomBytes(32).toString('hex')
-
-  this.passwordResetToken = crypto
-    .createHash('sha256')
-    .update(resetToken)
-    .digest('hex')
-
-  // console.log({ resetToken }, this.passwordResetToken);
-
-  this.passwordResetExpires = Date.now() + 10 * 60 * 1000
-
-  return resetToken
-}
 
 const User = mongoose.model('User', userSchema)
 
