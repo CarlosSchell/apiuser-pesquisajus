@@ -5,7 +5,7 @@ const { confirmUserEmail, forgotPassword, updatePassword }  = require('../contro
 const router = express.Router()
 
 router.get('/confirm/:token', confirmUserEmail)
-router.post('/users/forgotpassword/', forgotPassword)
-router.patch('/updatepassword/:token', updatePassword)
+router.post('/forgotpassword/', forgotPassword)
+router.patch('/users/updatepassword', updatePassword)
 
 module.exports = router

@@ -33,7 +33,7 @@ const register = asyncHandler(async (req, res, next) => {
 
   const userExists = await User.findOne({ email })
   if (userExists) {
-    return next(new AppError('User already exists', 400))
+    return next(new AppError('Email já cadastrado!', 400))
   }
 
   const tokenConfirm = signToken({ email }, next)
@@ -79,7 +79,7 @@ const register = asyncHandler(async (req, res, next) => {
 
   res.status(201).json({
     status: 'success',
-    message: 'O link para confirmação da conta foi enviado para o seu email',
+    message: 'Cadastro bem sucedido! O link para confirmação da conta foi enviado para o seu email',
     user: {
       name: user.name,
       email: user.email,
@@ -100,9 +100,11 @@ const confirmUserEmail = asyncHandler(async (req, res, next) => {
   }
 
   if (tokenConfirm !== user.tokenConfirm) {
-    return next(new AppError(
-      'O token de autorização não válido! Entre no login novamente para solicitar novo link de confirmação !',
-       404)
+    return next(
+      new AppError(
+        'O token de autorização não válido! Entre no login novamente para solicitar novo link de confirmação !',
+        404
+      )
     )
   }
 
@@ -127,7 +129,7 @@ const confirmUserEmail = asyncHandler(async (req, res, next) => {
 const login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body
   if (!email || !password) {
-    return next(new AppError('Please provide email and password!', 400))
+    return next(new AppError('Por favor entre com o email e a senha!', 400))
   }
 
   const user = await User.findOne({ email })
@@ -140,7 +142,6 @@ const login = asyncHandler(async (req, res, next) => {
   } else {
     role = user.role
   }
-  // const role = user.role ?? 'user'
 
   let isConfirmedUser
   if (user.isConfirmedUser === true) {
@@ -154,46 +155,46 @@ const login = asyncHandler(async (req, res, next) => {
   }
   const token = signToken({ email, role }, next)
 
-  console.log('Login user Token : ', token)
+  // console.log('Login user Token : ', token)
 
-  if (token) {
-    // Reenvia email de confirmação
-    const url = `${req.protocol}://${req.get('host')}/v1/confirm/${token}`
-    console.log('Url do Email: ', url)
+  // if (token) {
+  //   // Reenvia email de confirmação
+  //   const url = `${req.protocol}://${req.get('host')}/v1/confirm/${token}`
+  //   console.log('Url do Email: ', url)
 
-    const to = user.email
-    const from = `Contato <${process.env.EMAIL_USER}>` // 'contato@pesquisajus.com'
-    const subject = 'Bem vindo ao pesquisajus! - Por favor confirme o seu email'
-    const text = ''
-    const htmlConfirmLink = `<div className="text-center py-3">
-      <img src="./method-draw-image.svg" alt="pesquisajus logo" width="100" height="200"></img>
-      <h2> Olá ${user.name} Estamos reenviando este link para você!</h2>
-      <h2>Bem vindo ao pesquisajus!</h2>
-      <p>Clique no link abaixo para podermos${' '}<strong>confirmar seu email!</strong></p>
-      <a href="${url}">Confirmar E-mail</a>
-      <p>Ou se preferir copie e cole o link abaixo:</p>
-      <p>${url}</p>`
+  //   const to = user.email
+  //   const from = `Contato <${process.env.EMAIL_USER}>` // 'contato@pesquisajus.com'
+  //   const subject = 'Bem vindo ao pesquisajus! - Por favor confirme o seu email'
+  //   const text = ''
+  //   const htmlConfirmLink = `<div className="text-center py-3">
+  //     <img src="./method-draw-image.svg" alt="pesquisajus logo" width="100" height="200"></img>
+  //     <h2> Olá ${user.name} Estamos reenviando este link para você!</h2>
+  //     <h2>Bem vindo ao pesquisajus!</h2>
+  //     <p>Clique no link abaixo para podermos${' '}<strong>confirmar seu email!</strong></p>
+  //     <a href="${url}">Confirmar E-mail</a>
+  //     <p>Ou se preferir copie e cole o link abaixo:</p>
+  //     <p>${url}</p>`
 
-    await sendEmail(to, from, subject, text, htmlConfirmLink, url)
+  //   await sendEmail(to, from, subject, text, htmlConfirmLink, url)
+  // }
+  // return next(new AppError('Verifique a sua caixa de email para confirmar sua conta!', 401))
 
-    // return next(new AppError('Verifique a sua caixa de email para confirmar sua conta!', 401))
+  const data = await User.findOneAndUpdate({ email }, { token, isLoggedIn: true }, { new: true })
 
-    const data = await User.findOneAndUpdate({ email }, { token, isLoggedIn: true }, { new: true })
-
-    if (!data) {
-      return next(new AppError('Erro ao gravar o login do usuário', 500))
-    }
-
-    res.status(201).json({
-      status: 'success',
-      data: {
-        name: data.name,
-        email: data.email,
-        role: data.role,
-        token: data.token,
-      },
-    })
+  if (!data) {
+    return next(new AppError('Erro ao gravar o login do usuário', 500))
   }
+
+  res.status(201).json({
+    status: 'success',
+    message: 'O login foi bem sucedido !',
+    data: {
+      name: data.name,
+      email: data.email,
+      role: data.role,
+      token: data.token,
+    },
+  })
 })
 
 //
@@ -359,9 +360,18 @@ const restrictTo = (roles) => {
 
 //
 const updatePassword = asyncHandler(async (req, res, next) => {
-  console.log('Entrou no resetPassword !')
+  console.log('Entrou no updatePassword !')
 
-  const token = req.params.token
+  let token
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1]
+  }
+
+  if (!token) {
+    return next(new AppError('Não foi enviado o token de autorização.', 401))
+  }
+
+  // const token = req.params.token   --> no caso de forgot password / o link vem por email / com token na url
 
   console.log('Token : ', token)
   // 1) Get user based on the token
@@ -409,7 +419,7 @@ const updatePassword = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
-    message: 'O novo password do usuário foi atualizado!',
+    message: 'Sua nova senha foi atualizada!',
   })
 })
 
