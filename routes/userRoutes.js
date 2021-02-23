@@ -3,6 +3,7 @@ const { getAllUsers, getMe, getOneUser } = require('./../controllers/userControl
 const { getProcessos,gravaProcessos }  = require('./../controllers/procController.js')
 
 const {
+  welcomepage,
   register,
   confirmEmail,          // Confirms user email in initial registration
   confirmPassword,       // receives forgot password change request (outside app) - and confirms it into db
@@ -21,6 +22,8 @@ const router = express.Router()
 //.post(userController.createUser);
 
 // Unprotected routes
+
+router.get('/', welcomepage)
 router.post('/register', register)
 router.post('/confirmemail', confirmEmail)         // protected in the backend
 router.post('/changePassword', changePassword)      // protected in the backend

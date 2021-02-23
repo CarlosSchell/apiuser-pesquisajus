@@ -13,6 +13,7 @@ const cors = require('cors')
 const AppError = require('./utils/appError.js')
 const globalErrorHandler = require('./controllers/errorController.js')
 const userRouter = require('./routes/userRoutes.js')
+const generalRouter = require('./routes/generalRoutes.js')
 
 // Start express app
 const app = express()
@@ -25,7 +26,7 @@ app.use(cors())
 // Access-Control-Allow-Origin *
 // api.natours.com, front-end natours.com
 // app.use(cors({
-//   origin: 'https://189.6.236.218'  // 'https://www.pesquisajus.com', 
+//   origin: 'https://189.6.236.218'  // 'https://www.pesquisajus.com',
 // }))
 
 // app.options('/api/v1/tours/:id', cors())
@@ -97,16 +98,12 @@ app.use((req, res, next) => {
 })
 
 // 3) ROUTES
+app.use('/v1', generalRouter)
 app.use('/v1/users', userRouter)
 //app.use('/v1/processos', procRouter)
 
 app.all('*', (req, res, next) => {
-  next(
-    new AppError(
-      `Erro no servidor - 404 - Url ${req.originalUrl} não encontrada`,
-      404
-    )
-  )
+  next(new AppError(`Erro no servidor - 404 - Url ${req.originalUrl} não encontrada`, 404))
 })
 
 app.use(globalErrorHandler)

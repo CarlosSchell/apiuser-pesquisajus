@@ -452,7 +452,17 @@ const changePassword = asyncHandler(async (req, res, next) => {
   })
 })
 
+//
+const welcomepage = (req, res, next) => {
+  console.log('Entrou no welcomepage !')
+  res.status(200).json({
+    status: 'success',
+    message: 'Bem vindo a api do pesquisajus!',
+  })
+}
+
 module.exports = {
+  welcomepage,
   register,
   confirmEmail, // Confirms user email in initial registration
   confirmPassword, // receives forgot password change request (outside app) - and confirms it into db
