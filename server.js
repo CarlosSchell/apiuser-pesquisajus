@@ -14,10 +14,14 @@ dotenv.config()
 
 const app = require('./app.js')
 
-const DB = process.env.DATABASE.replace(
-  '<PASSWORD>',
-  process.env.DATABASE_PASSWORD
-)
+const DB = 'mongodb://api-pesquisaju01:api-pesquisaju01-mongodb@mongodb.api-pesquisajus.com.br:27017/api-pesquisaju01'
+
+// process.env.DATABASE
+
+// .replace(
+//   '<PASSWORD>',
+//   process.env.DATABASE_PASSWORD
+// )
 
 mongoose
   .connect(DB, {

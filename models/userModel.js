@@ -70,7 +70,8 @@ const userSchema = new mongoose.Schema(
     passwordResetToken: String,
     passwordResetExpires: Date,
     token: String,
-    tokenConfirm: String,
+    tokenEmailConfirm: String,
+    tokenPasswordConfirm: String,
     processos: [],
   },
   {

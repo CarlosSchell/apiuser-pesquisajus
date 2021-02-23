@@ -18,6 +18,17 @@ const { CLIENT_RENEG_LIMIT } = require('tls')
 
 dotenv.config()
 
+// Index
+// 022 - register,          // send html with email confirm request
+// 098 - confirmEmail,      // Confirms user email in initial registration
+// 140 - confirmPassword,   // receives forgot password change request (outside app) - and confirms it into db
+// 187 - login,
+// 259 - logout,
+// 271 - protect,
+// 321 - restrictTo,
+// 346 - forgotPassword,     // send html with password confirm request
+// 401 - changePassword,     // receives password change request (inside app) - and confirms it into db
+
 //
 const register = asyncHandler(async (req, res, next) => {
   let { email, name, role } = req.body
@@ -36,7 +47,9 @@ const register = asyncHandler(async (req, res, next) => {
     return next(new AppError('Email já cadastrado!', 400))
   }
 
-  const tokenConfirm = signToken({ email }, next)
+  const tokenEmailConfirm = signToken({ email }, next) /// Atenção - não é o user token !!!!
+
+  console.log('tokenEmailConfirm', tokenEmailConfirm)
 
   const user = await User.create({
     name,
@@ -47,30 +60,37 @@ const register = asyncHandler(async (req, res, next) => {
     processos: [],
     isLoggedInUser: false,
     isConfirmedUser: false,
-    tokenConfirm,
+    tokenEmailConfirm,
   })
 
   if (!user) {
     return next(new AppError('Erro ao gravar o novo usuário', 500))
   }
 
-  // Envia email de confirmação
+  // Sends email html confirmation request
+  const hostFrontend = 'localhost:3000'
+  const url = `${req.protocol}://${hostFrontend}/confirmemail/${tokenEmailConfirm}`
+
   //const url = `${req.protocol}://${req.get('host')}api/v1/users/confirm/${email}`
-  const url = `${req.protocol}://${req.get('host')}/v1/confirm/${tokenConfirm}`
+  // const url = `${req.protocol}://${req.get('host')}/confirmemail/${tokenConfirm}`
 
   const to = user.email
   const from = `Contato <${process.env.EMAIL_USER}>` // 'contato@pesquisajus.com'
   const subject = 'Bem vindo ao pesquisajus! - Por favor confirme o seu email'
   const text = ''
 
-  const htmlConfirmLink = `<div className="text-center py-3">
-    <img src="./method-draw-image.svg" alt="pesquisajus logo" width="100" height="200"></img>
-    <h2> Olá ${name}!</h2>
-    <h2>Bem vindo ao pesquisajus!</h2>
-    <p>Clique no link abaixo para podermos${' '}<strong>confirmar seu email!</strong></p>
-    <a href="${url}">Confirmar E-mail</a>
-    <p>Ou se preferir copie e cole o link abaixo:</p>
-    <p>${url}</p>`
+  const htmlConfirmLink = `<div style="text-align:center; font-weigth: 500; line-height:1.2; color: #5a5a5a; font-family: Montserrat, -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;', 'Courier New', monospace;">
+      <div style="font-size: 3rem; margin: 0;">pesquisajus</div>
+      <p style="font-size: 1.8rem;">Confirmar Email</p>
+      <p style="font-size: 1.6rem;"> Olá <strong>${name}</strong>!</p>
+      <p style="font-size: 1.4rem;">Bem vindo ao pesquisajus!</p>
+      <p style="font-size: 1.4rem;">Clique no link abaixo para confirmar o seu email!</p>
+      <button style="color:black; font-size:1.4rem;  background-color:lightblue; padding:15px 20px"><a style="color:black; text-decoration:none;";  href="${url}">Confirmar E-mail</a></button>
+      <p style="font-size: 1.4rem;">Ou se preferir copie e cole o link abaixo:</p>
+      <p style="font-size: 1.0rem;"></p>${url}</p>
+      <hr>
+      <p style="font-size: 1.4rem;">Por favor ignore esta mensagem, caso voce não tenha solicitado este email</p>
+    </div>`
 
   await sendEmail(to, from, subject, text, htmlConfirmLink, url) //.catch(console.error)
 
@@ -89,9 +109,20 @@ const register = asyncHandler(async (req, res, next) => {
 })
 
 //
-const confirmUserEmail = asyncHandler(async (req, res, next) => {
-  const tokenConfirm = req.params.token
-  const decoded = verifyToken(tokenConfirm, next) //Synchronous
+const confirmEmail = asyncHandler(async (req, res, next) => {
+  let token
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1]
+  }
+
+  // console.log(token)
+
+  if (!token) {
+    return next(new AppError('O token de autorização não válido! Solicite nova confirmação de email', 401))
+  }
+
+  const decoded = verifyToken(token, next) //Synchronous
+
   const email = decoded.email
   const user = await User.findOne({ email })
 
@@ -99,30 +130,69 @@ const confirmUserEmail = asyncHandler(async (req, res, next) => {
     return next(new AppError(`Usuário não encontrado para este email ${email}`, 404))
   }
 
-  if (tokenConfirm !== user.tokenConfirm) {
+  if (token !== user.tokenEmailConfirm) {
+    console.log('Token : ' ,token)
+    console.log('tokenEmailConfirm : ' ,user.tokenEmailConfirm)
+    return next(new AppError('O token de autorização não válido! Solicite novo link de confirmação !', 404))
+  }
+
+  user.isConfirmedUser = true
+  user.tokenEmailConfirm = ''
+  await user.save()
+
+  console.log('O email do usuário foi confirmado!')
+
+  res.status(200).json({
+    status: 'success',
+    message: 'O email do usuário foi confirmado!',
+    user: {
+      email: user.email,
+    },
+  })
+})
+
+//
+const confirmPassword = asyncHandler(async (req, res, next) => {
+  console.log('Entrou no changePassword !')
+  //try/catch para o decoded ??
+
+  let token
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1]
+  }
+
+  if (!token) {
+    return next(new AppError('O token de autorização não válido! Solicite nova confirmação de senha', 401))
+  }
+
+  const decoded = verifyToken(token, next) //Synchronous
+  const email = decoded.email
+  const user = await User.findOne({ email })
+
+  if (!user) {
+    return next(new AppError(`Usuário não encontrado para este email ${email}`, 404))
+  }
+
+  if (token !== user.tokenPasswordConfirm) {
     return next(
       new AppError(
-        'O token de autorização não válido! Entre no login novamente para solicitar novo link de confirmação !',
+        `O token de autorização não válido! Entre no login novamente para solicitar novo link de confirmação !`,
         404
       )
     )
   }
 
-  user.isConfirmedUser = true
-  user.tokenConfirm = ''
+  // Na versão final ativar estas linhas
+  user.tokenPasswordConfirm = ''
   await user.save()
 
   res.status(200).json({
     status: 'success',
-    msg: 'O email do usuário foi confirmado!',
+    message: 'O email do usuário foi confirmado!',
     user: {
       email: user.email,
     },
   })
-
-  // console.log(__dirname)
-  // console.log(path.join(__dirname + '\\userconfirmed.html'))
-  // res.sendFile(path.join(__dirname + '\\userconfirmed.html'))
 })
 
 //
@@ -210,50 +280,6 @@ const logout = (req, res) => {
 }
 
 //
-const forgotPassword = asyncHandler(async (req, res, next) => {
-  const email = req.body.email
-  const user = await User.findOne({ email })
-  if (!user) {
-    return next(new AppError('Não foi encontrado usuário para este endereço de email!', 404))
-  }
-
-  // Verify if the User  isConfirmedUser
-  if (user.isConfirmedUser !== true) {
-    return next(new AppError('O email do usuário não foi confirmado!', 404))
-  }
-
-  if (user.isConfirmedUser === true) {
-    // 2) Generate the reset token
-    const token = signToken({ email }, next)
-
-    // Envia email de confirmação
-    //const url = `${req.protocol}://${req.get('host')}api/v1/users/confirm/${email}`
-    const url = `${req.protocol}://${req.get('host')}/v1/resetpassword/${token}`
-
-    const to = user.email
-    const from = `Contato <${process.env.EMAIL_USER}>` // 'contato@pesquisajus.com'
-    const subject = 'Link para mudança de senha - pesquisajus!'
-    const text = ''
-
-    const htmlConfirmLink = `<div className="text-center py-3">
-      <img src="./method-draw-image.svg" alt="pesquisajus logo" width="100" height="200"></img>
-      <h2> Olá usuário <strong>pesquisajus!</strong></h2>
-      <h2>Voce solicitou um link para mudar a sua senha!</h2>
-      <p>Clique no link abaixo para cadastrar a sua nova senha!</p>
-      <a href="${url}">Confirmar E-mail</a>
-      <p>Ou se preferir copie e cole o link abaixo:</p>
-      <p>${url}</p>`
-
-    await sendEmail(to, from, subject, text, htmlConfirmLink, url) //.catch(console.error)
-
-    res.status(200).json({
-      status: 'success',
-      message: 'O link para o cadastro de nova senha foi enviado para o email',
-    })
-  }
-})
-
-//
 const protect = asyncHandler(async (req, res, next) => {
   // 1) Getting token and check if it's there
 
@@ -267,7 +293,7 @@ const protect = asyncHandler(async (req, res, next) => {
   }
 
   // 2) Read and Verify token
-  const decoded = await verifyToken(token, next)
+  const decoded = verifyToken(token, next)
   // console.log(decoded)
 
   // 3} Put extracted token data in the req (not in the body !!!)
@@ -279,61 +305,13 @@ const protect = asyncHandler(async (req, res, next) => {
   console.log('Inside protect : req.role  : ', req.role)
   //console.log(req.role)
 
-  // // 3) Check if user still exists
-  // const currentUser = await User.findOne(decoded.email)
-  // if (!currentUser) {
-  //   return next(
-  //     new AppError(
-  //       'The user belonging to this token does no longer exist.',
-  //       401
-  //     )
-  //   )
-  // }
-
-  // 4) Check if user changed password after the token was issued
-  // if (currentUser.changedPasswordAfter(decoded.iat)) {
-  //   return next(
-  //     new AppError('User recently changed password! Please log in again.', 401)
-  //   )
-  // }
-
   // GRANT ACCESS TO PROTECTED ROUTE
   // req.user = currentUser
   // res.locals.user = currentUser
   next()
 })
 
-// Only for rendered pages, no errors!
-// const isLoggedIn = async (req, res, next) => {
-//   if (req.cookies.jwt) {
-//     try {
-//       // 1) verify token
-//       const decoded = await promisify(jwt.verify)(
-//         req.cookies.jwt,
-//         process.env.JWT_SECRET
-//       )
-
-//       // 2) Check if user still exists
-//       const currentUser = await User.findById(decoded.id)
-//       if (!currentUser) {
-//         return next()
-//       }
-
-//       // 3) Check if user changed password after the token was issued
-//       if (currentUser.changedPasswordAfter(decoded.iat)) {
-//         return next()
-//       }
-
-//       // THERE IS A LOGGED IN USER
-//       res.locals.user = currentUser
-//       return next()
-//     } catch (err) {
-//       return next()
-//     }
-//   }
-//   next()
-// }
-
+//
 const restrictTo = (roles) => {
   console.log(roles)
 
@@ -358,9 +336,63 @@ const restrictTo = (roles) => {
   }
 }
 
+// forgotPassword envia email para o usuário confirmar pelo confirmPassword
+const forgotPassword = asyncHandler(async (req, res, next) => {
+  const email = req.body.email
+  const user = await User.findOne({ email })
+  if (!user) {
+    return next(new AppError('Não foi encontrado usuário para este endereço de email!', 404))
+  }
+
+  // Verify if the User  isConfirmedUser
+  if (user.isConfirmedUser !== true) {
+    return next(new AppError('O email do usuário não foi confirmado!', 404))
+  }
+
+  if (user.isConfirmedUser === true) {
+    // 2) Generate the reset token
+    const token = signToken({ email }, next)
+
+    user.tokenPasswordConfirm = token
+    user.save()
+
+    // Envia email de confirmação
+    //const url = `${req.protocol}://${req.get('host')}api/v1/users/confirm/${email}`
+    const hostFrontend = 'localhost:3000'
+    const url = `${req.protocol}://${hostFrontend}/confirmpassword/${token}`
+
+    const name = user.name
+    const to = user.email
+    const from = `Contato <${process.env.EMAIL_USER}>` // 'contato@pesquisajus.com'
+    const subject = 'pesquisajus - Link para mudança de senha'
+    const text = ''
+
+    const htmlConfirmLink = `<div style="text-align:center; font-weigth: 500; line-height:1.2; color: #5a5a5a; font-family: Montserrat, -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;', 'Courier New', monospace;">
+      <div style="font-size: 3rem; margin: 0;">pesquisajus</div>
+      <p style="font-size: 1.8rem;">Cadastrar nova Senha</p>
+      <p style="font-size: 1.6rem;"> Olá <strong>${name}</strong>!</p>
+      <p style="font-size: 1.4rem;">Voce solicitou um link para mudar a sua senha!</p>
+      <p style="font-size: 1.4rem;">Clique no link abaixo para cadastrar a sua nova senha!</p>
+      <button style="color:black; font-size:1.4rem;  background-color:lightblue; padding:15px 20px"><a style="color:black; text-decoration:none;";  href="${url}">Cadastrar Nova Senha</a></button>
+      <p style="font-size: 1.4rem;">Ou se preferir copie e cole o link abaixo:</p>
+      <p style="font-size: 1.0rem;"></p>${url}</p>
+      <hr>
+      <p style="font-size: 1.4rem;">Por favor ignore esta mensagem, caso voce não tenha solicitado este email</p>
+    </div>`
+
+    await sendEmail(to, from, subject, text, htmlConfirmLink, url) //.catch(console.error)
+
+    res.status(200).json({
+      status: 'success',
+      message: 'O link para o cadastro de nova senha foi enviado para o email',
+    })
+  }
+})
+
 //
-const updatePassword = asyncHandler(async (req, res, next) => {
-  console.log('Entrou no updatePassword !')
+const changePassword = asyncHandler(async (req, res, next) => {
+  console.log('Entrou no changePassword !')
+  //try/catch para o decoded ??
 
   let token
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
@@ -368,14 +400,11 @@ const updatePassword = asyncHandler(async (req, res, next) => {
   }
 
   if (!token) {
-    return next(new AppError('Não foi enviado o token de autorização.', 401))
+    return next(new AppError('O token de autorização não válido! Solicite nova confirmação de senha', 401))
   }
 
-  // const token = req.params.token   --> no caso de forgot password / o link vem por email / com token na url
+  const decoded = verifyToken(token, next) //Synchronous
 
-  console.log('Token : ', token)
-  // 1) Get user based on the token
-  const decoded = verifyToken(token, next)
   const emailDecoded = decoded.email
   const email = req.body.email
 
@@ -423,35 +452,14 @@ const updatePassword = asyncHandler(async (req, res, next) => {
   })
 })
 
-//
-const updateMyPassword = asyncHandler(async (req, res, next) => {
-  // 1) Get user from collection
-  const { email } = req.body
-  const user = await User.findOne({ email }).select('+password')
-
-  // 2) Check if POSTed current password is correct
-  if (!(await user.matchPassword(req.body.passwordCurrent, user.password))) {
-    return next(new AppError('O seu password atual está errado!', 401))
-  }
-
-  // 3) If so, update password
-  user.password = req.body.password
-  user.passwordConfirm = req.body.passwordConfirm
-  await user.save()
-  // User.findByIdAndUpdate will NOT work as intended!
-
-  // 4) Log user in, send JWT
-  createSendToken(user, 200, req, res)
-})
-
 module.exports = {
   register,
-  confirmUserEmail,
+  confirmEmail, // Confirms user email in initial registration
+  confirmPassword, // receives forgot password change request (outside app) - and confirms it into db
   login,
   logout,
   protect,
   restrictTo,
-  forgotPassword,
-  updatePassword,
-  updateMyPassword,
+  changePassword, // send html with password confirm request
+  forgotPassword, // receives password change request (inside app) - and confirms it into db
 }

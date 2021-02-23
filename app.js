@@ -12,7 +12,6 @@ const compression = require('compression')
 const cors = require('cors')
 const AppError = require('./utils/appError.js')
 const globalErrorHandler = require('./controllers/errorController.js')
-const authRouter = require('./routes/authRoutes.js')
 const userRouter = require('./routes/userRoutes.js')
 
 // Start express app
@@ -53,7 +52,7 @@ const limiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   message: 'Too many requests from this IP, please try again in an hour!',
 })
-app.use('/api', limiter)
+app.use('/', limiter)
 
 // // Stripe webhook, BEFORE body-parser, because stripe needs the body as stream
 // app.post(
@@ -98,7 +97,6 @@ app.use((req, res, next) => {
 })
 
 // 3) ROUTES
-app.use('/v1', authRouter)
 app.use('/v1/users', userRouter)
 //app.use('/v1/processos', procRouter)
 
