@@ -16,6 +16,8 @@
 /.git
 *.txt
 *.env
+.prettierrc
+.eslintrc.json
 private.key
 
 .env

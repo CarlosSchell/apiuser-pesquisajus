@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
+const https = require ('https')
+const fs = require ('fs')
 
 // process.on('uncaughtException', (err) => {
 //   console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...')
@@ -33,9 +35,18 @@ mongoose
   .then(() => console.log('DB connection successful! : ', DB))
 
 const port = process.env.PORT || 3000
-const server = app.listen(port, () => {
+
+https.createServer({
+  key: fs.readFileSync('./server.key'),
+  cert: fs.readFileSync('./server.cert')
+}, app)
+.listen(port, function () {
   console.log(`App running on port ${port}...`)
 })
+
+// const server = app.listen(port, () => {
+//   console.log(`App running on port ${port}...`)
+// })
 
 process.on('unhandledRejection', (err) => {
   console.log('UNHANDLED REJECTION! 💥 Shutting down...')

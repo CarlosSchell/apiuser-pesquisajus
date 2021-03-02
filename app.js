@@ -1,4 +1,5 @@
 const express = require('express')
+var fs = require('fs')
 const path = require('path')
 const morgan = require('morgan')
 const rateLimit = require('express-rate-limit')
@@ -18,19 +19,21 @@ const generalRouter = require('./routes/generalRoutes.js')
 // Start express app
 const app = express()
 
-app.enable('trust proxy')
+// app.enable('trust proxy')
 // const __dirname = path.resolve()
 
 // 1) GLOBAL MIDDLEWARES
 app.use(cors())
+
 // Access-Control-Allow-Origin *
-// api.natours.com, front-end natours.com
+// www.pesquisajus.com, www.pesquisajus.com.br 
 // app.use(cors({
-//   origin: 'https://189.6.236.218'  // 'https://www.pesquisajus.com',
+//   origin: ['https://www.pesquisajus.com.br', 'https://www.pesquisajus.com.br', '189.6.236.218'] 
 // }))
 
-// app.options('/api/v1/tours/:id', cors())
-app.options('*', cors())
+// app.options('/api/v1/tours/:id', cors()) 
+
+app.options('*', cors())  // allow complex requests - put, patch, delete -> uses preflight request - OPTION
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')))
@@ -49,7 +52,7 @@ if (process.env.NODE_ENV === 'production') {
 
 // Limit requests from same API
 const limiter = rateLimit({
-  max: 1000,
+  max: 10000,
   windowMs: 60 * 60 * 1000,
   message: 'Too many requests from this IP, please try again in an hour!',
 })
@@ -63,7 +66,7 @@ app.use('/', limiter)
 // );
 
 // Body parser, reading data from body into req.body
-app.use(express.json({ limit: '10kb' }))
+app.use(express.json({ limit: '1000kb' }))
 app.use(express.urlencoded({ extended: true, limit: '10kb' }))
 app.use(cookieParser())
 
@@ -74,6 +77,8 @@ app.use(mongoSanitize())
 app.use(xss())
 
 // Prevent parameter pollution
+app.use(hpp())
+   
 // app.use(
 //   hpp({
 //     whitelist: [

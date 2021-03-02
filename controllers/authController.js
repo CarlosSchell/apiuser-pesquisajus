@@ -13,8 +13,6 @@ const signToken = require('./../utils/signToken.js')
 const verifyToken = require('./../utils/verifyToken.js')
 const dotenv = require('dotenv')
 const sendEmail = require('../email/sendEmail.js')
-// const { htmlToText } = require('html-to-text')
-const { CLIENT_RENEG_LIMIT } = require('tls')
 
 dotenv.config()
 
@@ -68,7 +66,7 @@ const register = asyncHandler(async (req, res, next) => {
   }
 
   // Sends email html confirmation request
-  const hostFrontend = 'localhost:3000'
+  const hostFrontend = 'www.pesquisajus.com.br'
   const url = `${req.protocol}://${hostFrontend}/confirmemail/${tokenEmailConfirm}`
 
   //const url = `${req.protocol}://${req.get('host')}api/v1/users/confirm/${email}`
@@ -131,8 +129,8 @@ const confirmEmail = asyncHandler(async (req, res, next) => {
   }
 
   if (token !== user.tokenEmailConfirm) {
-    console.log('Token : ' ,token)
-    console.log('tokenEmailConfirm : ' ,user.tokenEmailConfirm)
+    console.log('Token : ', token)
+    console.log('tokenEmailConfirm : ', user.tokenEmailConfirm)
     return next(new AppError('O token de autorização não válido! Solicite novo link de confirmação !', 404))
   }
 
@@ -263,6 +261,7 @@ const login = asyncHandler(async (req, res, next) => {
       email: data.email,
       role: data.role,
       token: data.token,
+      processos: data.processos,
     },
   })
 })
@@ -358,7 +357,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
 
     // Envia email de confirmação
     //const url = `${req.protocol}://${req.get('host')}api/v1/users/confirm/${email}`
-    const hostFrontend = 'localhost:3000'
+    const hostFrontend = 'www.pesquisajus.com.br'
     const url = `${req.protocol}://${hostFrontend}/confirmpassword/${token}`
 
     const name = user.name
@@ -373,7 +372,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
       <p style="font-size: 1.6rem;"> Olá <strong>${name}</strong>!</p>
       <p style="font-size: 1.4rem;">Voce solicitou um link para mudar a sua senha!</p>
       <p style="font-size: 1.4rem;">Clique no link abaixo para cadastrar a sua nova senha!</p>
-      <button style="color:black; font-size:1.4rem;  background-color:lightblue; padding:15px 20px"><a style="color:black; text-decoration:none;";  href="${url}">Cadastrar Nova Senha</a></button>
+      <button style="color:black; font-size:1.4rem;  background-color:lightblue; padding:10px 15px"><a style="color:black; text-decoration:none;";  href="${url}">Cadastrar Nova Senha</a></button>
       <p style="font-size: 1.4rem;">Ou se preferir copie e cole o link abaixo:</p>
       <p style="font-size: 1.0rem;"></p>${url}</p>
       <hr>
@@ -452,17 +451,7 @@ const changePassword = asyncHandler(async (req, res, next) => {
   })
 })
 
-//
-const welcomepage = (req, res, next) => {
-  console.log('Entrou no welcomepage !')
-  res.status(200).json({
-    status: 'success',
-    message: 'Bem vindo a api do pesquisajus!',
-  })
-}
-
 module.exports = {
-  welcomepage,
   register,
   confirmEmail, // Confirms user email in initial registration
   confirmPassword, // receives forgot password change request (outside app) - and confirms it into db

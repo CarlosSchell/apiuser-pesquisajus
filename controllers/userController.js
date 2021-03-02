@@ -15,12 +15,7 @@ const getMe = (req, res, next) => {
 const updateMe = asyncHandler(async (req, res, next) => {
   // 1) Create error if user POSTs password data
   if (req.body.password || req.body.passwordConfirm) {
-    return next(
-      new AppError(
-        'This route is not for password updates. Please use /updateMyPassword.',
-        400
-      )
-    )
+    return next(new AppError('This route is not for password updates. Please use /updateMyPassword.', 400))
   }
 
   // 2) Filtered out unwanted fields names that are not allowed to be updated
@@ -70,12 +65,7 @@ const getOneUser = asyncHandler(async (req, res, next) => {
   let query = User.findOne({ email: req.params.id })
   const user = await query
   if (!user) {
-    return next(
-      new AppError(
-        `Usuário não encontrado para este email ${req.params.id}`,
-        404
-      )
-    )
+    return next(new AppError(`Usuário não encontrado para este email ${req.params.id}`, 404))
   }
   res.status(200).json({
     status: 'success',
@@ -83,7 +73,7 @@ const getOneUser = asyncHandler(async (req, res, next) => {
   })
 })
 
-module.exports =  { getAllUsers, getMe, getOneUser }
+module.exports = { getAllUsers, getMe, getOneUser }
 
 // const filterObj = (obj, ...allowedFields) => {
 //   const newObj = {};

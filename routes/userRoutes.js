@@ -1,9 +1,9 @@
 const express = require('express')
-const { getAllUsers, getMe, getOneUser } = require('./../controllers/userController.js')
-const { getProcessos,gravaProcessos }  = require('./../controllers/procController.js')
+const { getAllUsers } = require('./../controllers/userController.js')
+const { getProcessos, gravaProcessos }  = require('./../controllers/procController.js')
+const { welcomepage }  = require('./../controllers/generalController.js')
 
 const {
-  welcomepage,
   register,
   confirmEmail,          // Confirms user email in initial registration
   confirmPassword,       // receives forgot password change request (outside app) - and confirms it into db
@@ -13,7 +13,6 @@ const {
   restrictTo,
   changePassword,         // send html with password confirm request
   forgotPassword,         // receives password change request (inside app) - and confirms it into db
-  
 }  = require('./../controllers/authController.js')
 
 
@@ -31,8 +30,9 @@ router.post('/login', login)
 router.post('/forgotpassword/', forgotPassword)
 router.post('/confirmpassword', confirmPassword)   // protected in the backend
 
-router.get('/getprocessos', getProcessos)                // protected in the backend
-router.post('/gravaprocessos', gravaProcessos)          // protected in the backend
+//router.get('/getprocessos', getProcessos)           // protected in the backend
+router.get('/getprocessos', getProcessos)            // protected in the backend ???
+router.post('/gravaprocessos', gravaProcessos)       // protected in the backend
 
 router.route('/all').get(getAllUsers)
 router.post('/logout', logout)
