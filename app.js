@@ -8,12 +8,12 @@ const mongoSanitize = require('express-mongo-sanitize')
 const xss = require('xss-clean')
 const hpp = require('hpp')
 const cookieParser = require('cookie-parser')
-const bodyParser = require('body-parser')
 const compression = require('compression')
 const cors = require('cors')
 const AppError = require('./utils/appError.js')
 const globalErrorHandler = require('./controllers/errorController.js')
 const userRouter = require('./routes/userRoutes.js')
+const procRouter = require('./routes/procRoutes.js')
 const generalRouter = require('./routes/generalRoutes.js')
 
 // Start express app
@@ -26,14 +26,14 @@ const app = express()
 app.use(cors())
 
 // Access-Control-Allow-Origin *
-// www.pesquisajus.com, www.pesquisajus.com.br 
+// www.pesquisajus.com, www.pesquisajus.com.br
 // app.use(cors({
-//   origin: ['https://www.pesquisajus.com.br', 'https://www.pesquisajus.com.br', '189.6.236.218'] 
+//   origin: ['https://www.pesquisajus.com.br', 'https://www.pesquisajus.com.br', '189.6.236.218']
 // }))
 
-// app.options('/api/v1/tours/:id', cors()) 
+// app.options('/api/v1/tours/:id', cors())
 
-app.options('*', cors())  // allow complex requests - put, patch, delete -> uses preflight request - OPTION
+app.options('*', cors()) // allow complex requests - put, patch, delete -> uses preflight request - OPTION
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')))
@@ -52,7 +52,7 @@ if (process.env.NODE_ENV === 'production') {
 
 // Limit requests from same API
 const limiter = rateLimit({
-  max: 10000,
+  max: 100000,
   windowMs: 60 * 60 * 1000,
   message: 'Too many requests from this IP, please try again in an hour!',
 })
@@ -66,8 +66,10 @@ app.use('/', limiter)
 // );
 
 // Body parser, reading data from body into req.body
-app.use(express.json({ limit: '1000kb' }))
-app.use(express.urlencoded({ extended: true, limit: '10kb' }))
+app.use(express.json({ limit: '50mb' }))
+// app.use(express.urlencoded({ limit: '50mb' }))
+app.use(express.urlencoded({ extended: true, limit: '50mb' }))
+
 app.use(cookieParser())
 
 // Data sanitization against NoSQL query injection
@@ -78,7 +80,7 @@ app.use(xss())
 
 // Prevent parameter pollution
 app.use(hpp())
-   
+
 // app.use(
 //   hpp({
 //     whitelist: [
@@ -104,8 +106,8 @@ app.use((req, res, next) => {
 
 // 3) ROUTES
 app.use('/v1', generalRouter)
+app.use('/v1/publicacao', procRouter)
 app.use('/v1/users', userRouter)
-//app.use('/v1/processos', procRouter)
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Erro no servidor - 404 - Url ${req.originalUrl} não encontrada`, 404))

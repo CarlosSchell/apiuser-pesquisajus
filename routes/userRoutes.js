@@ -1,6 +1,6 @@
 const express = require('express')
 const { getAllUsers } = require('./../controllers/userController.js')
-const { getProcessos, gravaProcessos }  = require('./../controllers/procController.js')
+const { getProcessos, gravaProcessos, }  = require('./../controllers/procController.js')
 const { welcomepage }  = require('./../controllers/generalController.js')
 
 const {
@@ -18,10 +18,6 @@ const {
 
 const router = express.Router()
 
-//.post(userController.createUser);
-
-// Unprotected routes
-
 router.get('/', welcomepage)
 router.post('/register', register)
 router.post('/confirmemail', confirmEmail)         // protected in the backend
@@ -29,13 +25,12 @@ router.post('/changePassword', changePassword)      // protected in the backend
 router.post('/login', login)
 router.post('/forgotpassword/', forgotPassword)
 router.post('/confirmpassword', confirmPassword)   // protected in the backend
-
-//router.get('/getprocessos', getProcessos)           // protected in the backend
-router.get('/getprocessos', getProcessos)            // protected in the backend ???
-router.post('/gravaprocessos', gravaProcessos)       // protected in the backend
-
 router.route('/all').get(getAllUsers)
 router.post('/logout', logout)
+
+//User Processos - procController                                  // protected in the backend
+router.get('/getprocessos', getProcessos)            // protected in the backend ???
+router.post('/gravaprocessos', gravaProcessos)       // protected in the backend
 
 // Protect all routes after this middleware
 // router.use(protect)

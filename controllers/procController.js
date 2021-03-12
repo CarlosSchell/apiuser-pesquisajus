@@ -1,31 +1,52 @@
+const fs = require('fs')
 const asyncHandler = require('express-async-handler')
-const User = require('./../models/userModel.js')
+const Publicacao = require('./../models/publicacaoModel.js')
 const AppError = require('./../utils/appError.js')
 const verifyToken = require('./../utils/verifyToken.js')
 
-// const getProcessos = asyncHandler(async (req, res, next) => {
+//
+const getProcessos = asyncHandler(async (req, res, next) => {
+  console.log('Entrou no getProcessos !')
+  console.log('req.headers.authorization !', req.headers.authorization)
 
-//   const email = req.email
-//   // const role = req.role
+  let token
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1]
+  }
 
-//   console.log('Dentro do getProcessos : Email', email )
+  if (!token) {
+    return next(new AppError('O token de autorização não válido! Solicite nova confirmação de senha', 401))
+  }
 
-//   const user = await User.findOne({ email })
-//   if (!user) {
-//     return next(new AppError('Usuário não encontrado !', 401))
-//   }
+  const decoded = verifyToken(token, next) //Synchronous
+  const email = decoded.email
 
-//   // console.log('Dentro do getProcessos : user', user )
+  if (!email) {
+    return next(new AppError('O email do usuário não foi fornecido!', 400))
+  }
 
-//   res.status(201).json({
-//     status: 'success',
-//     user: {
-//       email: user.email,
-//       processos: user.processos,
-//     },
-//   })
+  const user = await User.findOne({ email })
 
-// })
+  if (!user) {
+    return next(new AppError('Usuário não encontrado para este email!', 401))
+  }
+
+  let processos
+  if (user.processos) {
+    processos = user.processos
+  } else {
+    processos = []
+  }
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Foram enviados os dados dos processos do usuário !',
+    data: {
+      email,
+      processos,
+    },
+  })
+})
 
 //
 const gravaProcessos = asyncHandler(async (req, res, next) => {
@@ -72,69 +93,157 @@ const gravaProcessos = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     message: 'Foram gravados os dados dos processos do usuário !',
-    data: {
-      email,
-      processos,
-    },
+    publicacao,
   })
 })
 
-const getProcessos = asyncHandler(async (req, res, next) => {
-  console.log('Entrou no getProcessos !')
+//
+const getPublicacao = asyncHandler(async (req, res, next) => {
+  console.log('Entrou no getPublicacao !')
+  // console.log('req.headers.authorization !', req.headers.authorization)
 
-  console.log('req.headers.authorization !', req.headers.authorization)
+  const processo = req.params.processo
+  // let token
+  // if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+  //   token = req.headers.authorization.split(' ')[1]
+  // }
 
-  let token
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    token = req.headers.authorization.split(' ')[1]
-  }
+  // if (!token) {
+  //   return next(new AppError('O token de autorização não válido!', 401))
+  // }
 
-  if (!token) {
-    return next(new AppError('O token de autorização não válido! Solicite nova confirmação de senha', 401))
-  }
+  // const decoded = verifyToken(token, next)  //Synchronous
 
-  console.log('Token:', token)
-  console.log('Body:', req.body)
+  // if (decoded !== '') {
+  //   // send message invalid token
+  // }
 
-  const decoded = verifyToken(token, next) //Synchronous
+  const data = await Publicacao.find({ processo })
+  console.log(data)
 
-  console.log('Decoded:', decoded)
-
-  const email = decoded.email
-
-  if (!email) {
-    return next(new AppError('O email do usuário não foi fornecido!', 400))
-  }
-
-  const user = await User.findOne({ email })
-
-  // const user = await User.findOne({ email })
-
-  if (!user) {
-    return next(new AppError('Usuário não encontrado para este email!', 401))
-  }
-
-  let processos
-  if (user.processos) {
-    processos = user.processos
-  } else {
-    processos = []
+  let publicacoes = []
+  if (data) {
+    publicacoes = data
   }
 
   res.status(200).json({
     status: 'success',
-    message: 'Foram enviados os dados dos processos do usuário !',
+    message: `Processo ${processo}`,
     data: {
-      email,
-      processos,
+      publicacoes,
     },
   })
 })
 
+//
+const gravaPublicacao = asyncHandler(async (req, res, next) => {
+  //console.log('Entrou no gravaPublicacao !')
+  //console.log('req.headers.authorization !', req.headers.authorization)
+
+  const publicacao = req.body
+  const processo = req.body.processo
+
+  // console.log('publicacao : ', req.body)
+  console.log('processo : ', req.body.processo)
+
+  // let token
+  // if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+  //   token = req.headers.authorization.split(' ')[1]
+  // }
+
+  // if (!token) {
+  //   return next(new AppError('O token de autorização não foi corretamente informado!', 401))
+  // }
+
+  // const decoded = verifyToken(token, next)  //Synchronous
+
+  // if (decoded !== '') {
+  //   return next(new AppError('Token com dados inválidos', 401))
+  // }
+
+  const data = await Publicacao.create(publicacao)
+
+  if (!data) {
+    return next(new AppError(`Erro ao gravar a nova publicacao ${processo}`, 500))
+  }
+
+  //console.log(data)
+
+  id_publicacao = data._id
+  console.log('id_publicacao : ', id_publicacao)
+
+  res.status(200).json({
+    status: 'success',
+    message: `Processo ${processo}`,
+    data: {
+      id_publicacao,
+      publicacao
+    },
+  })
+})
+
+//
+const uploadJson = asyncHandler(async (req, res, next) => {
+  res.status(200).json({
+    status: 'success',
+    message: `Arquivo Json enviado`,
+  })
+})
+
+const gravaBancoDados = asyncHandler(async (req, res, next) => {
+  console.log(req.body)
+  arquivo = req.body.arquivo
+  // const readFileAsync = promisify(fs.readFile)
+
+  const diretorio = '../www/public/dados/tjrs/json/'+arquivo
+  // const publicacao = []
+
+  console.log(diretorio)
+  //const jsonString = fs.readFileSync('./customer.json')
+  const jsonString = fs.readFileSync(diretorio, 'utf8')
+  const publicacao = JSON.parse(jsonString)
+
+  // fs.readFile(diretorio, 'utf8', (err, publicacao) => {
+  //   if (err) {
+  //       console.log("File read failed:", err)
+  //       return
+  //   }
+  //   // console.log('File data:', publicacao) 
+  // })
+
+  //publicacao.forEach(item => console.log(item))
+
+  const data = await Publicacao.insertMany(publicacao)
+
+  if (!data) {
+    return next(new AppError(`Erro ao gravar o banco de dados ${arquivo}`, 500))
+  }
+
+  // Publicacao.insertMany(publicacao).then(function(){ 
+  //   console.log("Data inserted")  // Success 
+  // }).catch(function(error){ 
+  //   console.log(error)      // Failure 
+  // });
+
+
+  // console.log(publicacao)
+
+  res.status(200).json({
+    status: 'success',
+    message: `Database atualizado`,
+  })
+})
+
+
 module.exports = {
   getProcessos,
   gravaProcessos,
+  getPublicacao,
+  gravaPublicacao,
+  uploadJson,
+  gravaBancoDados
 }
+
 
 // const gravaProcessos = asyncHandler(async (req, res, next) => {
 //   //console.log(req)
