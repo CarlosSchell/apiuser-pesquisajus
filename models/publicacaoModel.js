@@ -96,6 +96,17 @@ const publicacaoSchema = new mongoose.Schema(
       trim: true,
       maxlenght: 80,
     },
+    desctipo: {
+      type: String,
+      //required: [true, 'Erro no campo : tipo'],
+      trim: true
+    },
+    recurso: {
+      type: String,
+      //required: [true, 'Erro no campo : tipo'],
+      trim: true,
+      maxlenght: 80,
+    },
     assunto: {
       type: String,
       //required: [true, 'Erro no campo : assunto'],
