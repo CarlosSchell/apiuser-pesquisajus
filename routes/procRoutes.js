@@ -1,7 +1,7 @@
 const express = require('express')
 const multer = require('multer')
 
-const { getPublicacao, gravaPublicacao, uploadJson, gravaBancoDados } = require('./../controllers/procController.js')
+const { getPublicacao, getPublicacaoTexto, gravaPublicacao, uploadJson, gravaDiario } = require('./../controllers/procController.js')
 
 // console.log('/home/api-pesquisajus/www/public/dados/tjrs')
 //diretorio = '/home/www/public/dados/tjrs'
@@ -28,11 +28,13 @@ const router = express.Router()
 
 router.get('/:processo', getPublicacao)
 
+router.get('/texto/:nome', getPublicacaoTexto)
+
 // habilitar só admin para esta rota
 router.post('/', gravaPublicacao)
 
 router.post('/uploadjson', upload.single('arquivojson'), uploadJson)
 
-router.post('/gravabancodados', gravaBancoDados)
+router.post('/gravadiario', gravaDiario)
 
 module.exports = router

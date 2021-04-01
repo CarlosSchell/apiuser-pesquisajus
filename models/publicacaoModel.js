@@ -90,6 +90,10 @@ const publicacaoSchema = new mongoose.Schema(
       type: String,
       maxlenght: 25,
     },
+    origemg1: {
+      type: String,
+      maxlenght: 25,
+    },
     tipo: {
       type: String,
       //required: [true, 'Erro no campo : tipo'],
