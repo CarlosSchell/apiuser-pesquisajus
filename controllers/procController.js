@@ -8,7 +8,7 @@ const verifyToken = require('./../utils/verifyToken.js')
 //
 const getProcessos = asyncHandler(async (req, res, next) => {
   console.log('Entrou no getProcessos !')
-  console.log('req.headers.authorization !', req.headers.authorization)
+  // console.log('req.headers.authorization !', req.headers.authorization)
 
   let token
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
@@ -98,7 +98,6 @@ const gravaProcessos = asyncHandler(async (req, res, next) => {
   })
 })
 
-
 const getPublicacao = asyncHandler(async (req, res, next) => {
   console.log('Entrou no getPublicacao !')
   // console.log('req.headers.authorization !', req.headers.authorization)
@@ -146,8 +145,8 @@ const getPublicacaoTexto = asyncHandler(async (req, res, next) => {
   // const texto_editado = `"\\"${texto}\""`
   //console.log('Query : ',query)
   // "\"GISELE DOS SANTOS SILVA\""
-  // db.getCollection('publicacaos').find({$text: { $search: "\"GISELE DOS SANTOS SILVA\"" }}) 
-  
+  // db.getCollection('publicacaos').find({$text: { $search: "\"GISELE DOS SANTOS SILVA\"" }})
+
   const nome = req.params.nome
   //console.log('Texto pra buscar : ', nome)
   //const str_busca = '\"' + texto +'\"'
@@ -158,8 +157,8 @@ const getPublicacaoTexto = asyncHandler(async (req, res, next) => {
   console.log('str_busca : ', str_busca)
 
   //const data = await Publicacao.find({ $text: { $search: "\"${str_busca}\"" }})
-  const data = await Publicacao.find({ $text: { $search: str_busca }}).limit(200)
-  
+  const data = await Publicacao.find({ $text: { $search: str_busca } }).limit(1000)
+
   // let token
   // if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
   //   token = req.headers.authorization.split(' ')[1]
@@ -196,6 +195,45 @@ const getPublicacaoTexto = asyncHandler(async (req, res, next) => {
   })
 })
 
+
+const getPublicacaoNumero = asyncHandler(async (req, res, next) => {
+  console.log('Entrou no getPublicacaoNumero !')
+  // console.log('req.headers.authorization !', req.headers.authorization)
+  const processo = req.params.numero
+  console.log('Número pra buscar : ', processo)
+
+  // const data = await Publicacao.find({ $nroprocesso: str_busca }).limit(50)
+  const data = await Publicacao.find({ processo }).limit(50)
+
+  // let token
+  // if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+  //   token = req.headers.authorization.split(' ')[1]
+  // }
+
+  // if (!token) {
+  //   return next(new AppError('O token de autorização não válido!', 401))
+  // }
+
+  // const decoded = verifyToken(token, next)  //Synchronous
+
+  // if (decoded !== '') {
+  //   // send message invalid token
+  // }
+
+
+  let publicacoes = []
+  if (data) {
+    publicacoes = data
+  }
+
+  res.status(200).json({
+    status: 'success',
+    message: `Processo buscado ${processo}`,
+    data: {
+      publicacoes,
+    },
+  })
+})
 
 //
 const gravaPublicacao = asyncHandler(async (req, res, next) => {
@@ -239,7 +277,7 @@ const gravaPublicacao = asyncHandler(async (req, res, next) => {
     message: `Processo ${processo}`,
     data: {
       id_publicacao,
-      publicacao
+      publicacao,
     },
   })
 })
@@ -269,15 +307,14 @@ const gravaDiario = asyncHandler(async (req, res, next) => {
   //       console.log("File read failed:", err)
   //       return
   //   }
-  //   // console.log('File data:', publicacao) 
+  //   // console.log('File data:', publicacao)
   // })
   //publicacao.forEach(item => console.log(item))
-  // Publicacao.insertMany(publicacao).then(function(){ 
-  //   console.log("Data inserted")  // Success 
-  // }).catch(function(error){ 
-  //   console.log(error)      // Failure 
+  // Publicacao.insertMany(publicacao).then(function(){
+  //   console.log("Data inserted")  // Success
+  // }).catch(function(error){
+  //   console.log(error)      // Failure
   // });
-
 
   const data = await Publicacao.insertMany(publicacoes)
 
@@ -295,17 +332,16 @@ const gravaDiario = asyncHandler(async (req, res, next) => {
   })
 })
 
-
 module.exports = {
   getProcessos,
   gravaProcessos,
   getPublicacao,
   getPublicacaoTexto,
+  getPublicacaoNumero,
   gravaPublicacao,
   uploadJson,
-  gravaDiario
+  gravaDiario,
 }
-
 
 // const gravaProcessos = asyncHandler(async (req, res, next) => {
 //   //console.log(req)
