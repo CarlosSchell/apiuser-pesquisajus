@@ -1,6 +1,5 @@
 'use strict'
 const nodemailer = require('nodemailer')
-
 const dotenv = require('dotenv')
 
 dotenv.config()
@@ -19,9 +18,9 @@ const transporter = nodemailer.createTransport({
   },
 })
 
-// async..await is not allowed in global scope, must use a wrapper
 
-const sendEmail = async (to, from, subject, text, html, url) => {
+// async..await is not allowed in global scope, must use a wrapper
+const sendEmail = async (to, from, subject, text, html) => {
   //try {
   let info = await transporter.sendMail({
     from,

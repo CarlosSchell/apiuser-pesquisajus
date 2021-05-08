@@ -1,7 +1,12 @@
 const fs = require('fs')
+const Path = require('path')
+// const dotenv = require('dotenv')
+//const open = require('fs/promises/open')
+
 const asyncHandler = require('express-async-handler')
 const Publicacao = require('./../models/publicacaoModel.js')
 const User = require('./../models/userModel.js')
+const Diario = require('./../models/diarioModel.js')
 const AppError = require('./../utils/appError.js')
 const verifyToken = require('./../utils/verifyToken.js')
 
@@ -62,12 +67,12 @@ const gravaProcessos = asyncHandler(async (req, res, next) => {
     return next(new AppError('O token de autorização não válido! Solicite nova confirmação de senha', 401))
   }
 
-  console.log('Token:', token)
-  console.log('Body:', req.body)
+  // console.log('Token:', token)
+  console.log('Grava Processos Body:', req.body)
 
   const decoded = verifyToken(token, next) //Synchronous
 
-  console.log('Decoded:', decoded)
+  // console.log('Decoded:', decoded)
 
   const email = decoded.email
 
@@ -94,11 +99,11 @@ const gravaProcessos = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     message: 'Foram gravados os dados dos processos do usuário !',
-    publicacao,
+    processos,
   })
 })
 
-const getPublicacao = asyncHandler(async (req, res, next) => {
+const getPublicacaoProcesso = asyncHandler(async (req, res, next) => {
   console.log('Entrou no getPublicacao !')
   // console.log('req.headers.authorization !', req.headers.authorization)
 
@@ -135,7 +140,6 @@ const getPublicacao = asyncHandler(async (req, res, next) => {
   })
 })
 
-
 const getPublicacaoTexto = asyncHandler(async (req, res, next) => {
   console.log('Entrou no getPublicacaoTexto !')
   // console.log('req.headers.authorization !', req.headers.authorization)
@@ -154,7 +158,7 @@ const getPublicacaoTexto = asyncHandler(async (req, res, next) => {
   //const str_busca = "\"GISELE DOS SANTOS SILVA\""
 
   const str_busca = `\"${nome}\"`
-  console.log('str_busca : ', str_busca)
+  // console.log('str_busca : ', str_busca)
 
   //const data = await Publicacao.find({ $text: { $search: "\"${str_busca}\"" }})
   const data = await Publicacao.find({ $text: { $search: str_busca } }).limit(1000)
@@ -195,7 +199,6 @@ const getPublicacaoTexto = asyncHandler(async (req, res, next) => {
   })
 })
 
-
 const getPublicacaoNumero = asyncHandler(async (req, res, next) => {
   console.log('Entrou no getPublicacaoNumero !')
   // console.log('req.headers.authorization !', req.headers.authorization)
@@ -220,7 +223,6 @@ const getPublicacaoNumero = asyncHandler(async (req, res, next) => {
   //   // send message invalid token
   // }
 
-
   let publicacoes = []
   if (data) {
     publicacoes = data
@@ -244,7 +246,7 @@ const gravaPublicacao = asyncHandler(async (req, res, next) => {
   const processo = req.body.processo
 
   // console.log('publicacao : ', req.body)
-  console.log('processo : ', req.body.processo)
+  // console.log('processo : ', req.body.processo)
 
   // let token
   // if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
@@ -290,6 +292,71 @@ const uploadJson = asyncHandler(async (req, res, next) => {
   })
 })
 
+const downloadFile = asyncHandler(async (req, res, next) => {
+  let token
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1]
+  }
+
+  if (!token) {
+    return next(new AppError('O token de autorização não foi corretamente informado!', 401))
+  }
+
+  verifyToken(token, next) //Synchronous
+
+  // console.log('req: ', req)
+
+  const arquivo = req.body.arquivo
+  //const arquivo = 'arquivo' 
+  const extensao = req.body.extensao
+  //const extensao = 'csv'
+
+  const diretorio_dados = '/home/api-pesquisajus/www/public/dados/tjrs/'
+  console.log('--------------------------------------------------')
+  // const nomeArquivo = Path.resolve(__dirname, 'public', (arquivo + '.' + extensao))
+  // const nomeArquivo = Path.resolve('/home/api-pesquisajus/apps_nodejs/public', (arquivo + '.' + extensao))
+  const nomeArquivo = Path.resolve(diretorio_dados, (arquivo + '.' + extensao))
+  //const nomeArquivo = Path.resolve('/home/api-pesquisajus/apps_nodejs/', 'public', (arquivo + '.' + extensao))
+  console.log('arquivo1: ', arquivo)
+  console.log('extensao: ', extensao)
+  console.log(' __dirname : ', __dirname)
+  //nomeArquivo = diretorio + arquivo + '.' + extensao
+  console.log('path       : ', (Path.resolve(__dirname, '', (arquivo + '.' + extensao))))
+  console.log('nomeArquivo : ', nomeArquivo)
+  console.log('--------------------------------------------------')
+
+  fs.access(nomeArquivo, fs.F_OK, (err) => {
+    if (!err) {
+      const file = fs.createReadStream(nomeArquivo)
+      const stat = fs.statSync(nomeArquivo)
+
+      let MIME_TYPE = 'text/plain'
+      res.setHeader('Content-Length', stat.size)
+      if (extensao === 'pdf') {
+        MIME_TYPE = 'application/pdf'
+      }
+      if (extensao === 'txt') {
+        MIME_TYPE = 'text/plain'
+      }
+      if (extensao === 'csv') {
+        MIME_TYPE = 'text/csv'
+      }
+      if (extensao === 'json') {
+        MIME_TYPE = 'application/json'
+      }
+      res.setHeader('Content-Type', MIME_TYPE)
+      //res.setHeader('Content-Disposition', 'attachment; filename=arquivo.pdf');
+      file.pipe(res)
+    } else {
+      console.log(err)
+      res.status(500).json({
+        status: 'fail',
+        message: `Arquivo ${arquivo + '.' + extensao} não encontrado`,
+      })
+    }
+  })
+})
+
 const gravaDiario = asyncHandler(async (req, res, next) => {
   //console.log(req.body)
   publicacoes = req.body
@@ -332,15 +399,65 @@ const gravaDiario = asyncHandler(async (req, res, next) => {
   })
 })
 
+const getPrimeiroUltimoDiario = asyncHandler(async (req, res, next) => {
+  console.log('Entrou no getPrimeiroUltimoDiario !')
+
+  // console.log('Diario: ', Diario)
+
+  const primeiroDiario = await Diario.find({}).sort({ diario: 1 }).limit(1) //   db.getCollection('diarios').find({})
+  //Diario.find({}) // .sort({ diario: 1}).limit(1)
+
+  const ultimoDiario = await Diario.find({}).sort({ diario: -1 }).limit(1)
+
+  console.log('primeiroDiario ', primeiroDiario)
+  console.log('ultimoDiario ', ultimoDiario)
+
+  let dataPrimeiroDiario = '00/00/0000'
+  let dataUltimoDiario = '00/00/0000'
+  if (primeiroDiario) {
+    dataPrimeiroDiario = primeiroDiario[0].dia + '/' + primeiroDiario[0].mes + '/' + primeiroDiario[0].ano
+  }
+
+  if (ultimoDiario) {
+    dataUltimoDiario = ultimoDiario[0].dia + '/' + ultimoDiario[0].mes + '/' + ultimoDiario[0].ano
+  }
+
+  res.status(200).json({
+    status: 'success',
+    message: `Periodo dos Dados: ${dataPrimeiroDiario} a ${dataUltimoDiario}`,
+    data: {
+      dataPrimeiroDiario,
+      dataUltimoDiario,
+    },
+  })
+})
+
+const getTodosOsDiarios = asyncHandler(async (req, res, next) => {
+  console.log('Entrou no getgetTodosOsDiarios !')
+  const diarios = await Diario.find({}).sort({ diario: -1 }) //   db.getCollection('diarios').find({})
+  console.log('diarios ', diarios)
+
+  res.status(200).json({
+    status: 'success',
+    message: `Lista dos Diarios`,
+    data: {
+      diarios,
+    },
+  })
+})
+
 module.exports = {
   getProcessos,
   gravaProcessos,
-  getPublicacao,
+  getPublicacaoProcesso,
   getPublicacaoTexto,
   getPublicacaoNumero,
   gravaPublicacao,
   uploadJson,
+  downloadFile,
   gravaDiario,
+  getPrimeiroUltimoDiario,
+  getTodosOsDiarios,
 }
 
 // const gravaProcessos = asyncHandler(async (req, res, next) => {

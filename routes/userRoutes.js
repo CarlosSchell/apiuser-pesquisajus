@@ -1,7 +1,6 @@
 const express = require('express')
 const { getAllUsers } = require('./../controllers/userController.js')
 const { getProcessos, gravaProcessos, }  = require('./../controllers/procController.js')
-const { welcomepage }  = require('./../controllers/generalController.js')
 
 const {
   register,
@@ -18,7 +17,6 @@ const {
 
 const router = express.Router()
 
-router.get('/', welcomepage)
 router.post('/register', register)
 router.post('/confirmemail', confirmEmail)         // protected in the backend
 router.post('/changePassword', changePassword)      // protected in the backend

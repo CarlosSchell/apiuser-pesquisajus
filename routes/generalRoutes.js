@@ -1,8 +1,12 @@
 const express = require('express')
-const { welcomepage } = require('./../controllers/generalController.js')
+const dotenv = require('dotenv')
+const sendEmail = require('../email/sendEmail.js')
+
+const { welcomepage, enviaEmailContato } = require('./../controllers/generalController.js')
 
 const router = express.Router()
 
-router.get('/', welcomepage)
+router.get('/welcome', welcomepage)
+router.post('/enviaemail', enviaEmailContato)
 
 module.exports = router

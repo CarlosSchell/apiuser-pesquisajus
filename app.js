@@ -1,5 +1,5 @@
 const express = require('express')
-var fs = require('fs')
+// const  fs = require('fs')
 const path = require('path')
 const morgan = require('morgan')
 const rateLimit = require('express-rate-limit')
@@ -14,6 +14,7 @@ const AppError = require('./utils/appError.js')
 const globalErrorHandler = require('./controllers/errorController.js')
 const userRouter = require('./routes/userRoutes.js')
 const procRouter = require('./routes/procRoutes.js')
+const procEsRouter = require('./routes/procEsRoutes.js')
 const generalRouter = require('./routes/generalRoutes.js')
 
 // Start express app
@@ -36,6 +37,10 @@ app.use(cors())
 app.options('*', cors()) // allow complex requests - put, patch, delete -> uses preflight request - OPTION
 
 // Serving static files
+console.log('App dirname : ', __dirname)
+
+//  /home/api-pesquisajus/apps_nodejs
+//  /home/api-pesquisajus/www/public/tjrs
 app.use(express.static(path.join(__dirname, 'public')))
 
 // Set security HTTP headers
@@ -105,8 +110,9 @@ app.use((req, res, next) => {
 })
 
 // 3) ROUTES
-app.use('/v1', generalRouter)
-app.use('/v1/publicacao', procRouter)
+app.use('/v1/geral', generalRouter)
+app.use('/v1/publicacao/db', procRouter)
+app.use('/v1/publicacao/es', procEsRouter)
 app.use('/v1/users', userRouter)
 
 app.all('*', (req, res, next) => {
